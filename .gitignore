@@ -1,0 +1,16 @@
+/dist
+/logs
+/node_modules
+
+#Mac OS X
+.DS_Store
+
+#env
+env/*
+
+#log
+*.log
+
+#yarn
+yarn.lock
+pacakage-lock.json
