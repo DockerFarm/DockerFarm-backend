@@ -6,7 +6,7 @@ node {
         stage('Environment') {
             sh 'git --version'
             echo "Branch: ${env.BRANCH_NAME}"
-            sh 'docker -v'
+            sh 'sudo docker -v'
             sh 'printenv'
         }
         stage('Build Docker test') {
@@ -20,10 +20,10 @@ node {
         }
         stage('Deploy') {
             if(env.BRANCH_NAME == 'master') {
-                sh 'docker build -t dockerfarm-backend --no-cache .'
-                sh 'docker tag dockerfarm-backend localhost:5000/dockerfarm-backend'
-                sh 'docker push localhost:5000/dockerfarm-backend'
-                sh 'docker rmi -f dockerfarm-backend localhost:5000/dockerfarm-backend'
+                sh 'sudo docker build -t dockerfarm-backend --no-cache .'
+                sh 'sudo docker tag dockerfarm-backend localhost:5000/dockerfarm-backend'
+                sh 'sudo docker push localhost:5000/dockerfarm-backend'
+                sh 'sudo docker rmi -f dockerfarm-backend localhost:5000/dockerfarm-backend'
             }
         }
     } catch (err) {
