@@ -52,6 +52,38 @@ User.statics.localSignup = function({
     return user.save();
 };
 
+User.statics.socialSignup = function({
+    email,
+    provider,
+    accessToken,
+    username,
+    socialId
+}) {
+    let user = new this({
+        email,
+        username,
+        social: {
+            [provider]: {
+                id: socialId,
+                accessToken: accessToken
+            }
+        }
+    });
+
+    return user.save();
+}
+
+User.statics.findBySocialId = function({
+    provider,
+    id
+}) {
+    return this.findOne()
+                .where('social.provider').equals(provider)
+                .where('social.provider.id').equals(id)
+                .exec();
+}
+
+
 User.statics.findByEmail = function(email) {
     return this.findOne({email}).exec();
 };
