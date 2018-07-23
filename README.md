@@ -1,64 +1,53 @@
-# Serverless-Koa-Boilerplate
+# DockerFarm-backend
 
-This boilerplate helps you quickly create the koa-based serverless app.
+![Build Status](http://jenkins.dockerfarm.cf/buildStatus/icon?job=DockerFarm-backend/master&raw=true)
 
-## Stack 
+![image](https://user-images.githubusercontent.com/2585676/40734484-8f5f291c-6473-11e8-8e9e-58add225b45b.png)
 
-* MongoDB
-* Koa
-* Serverless-http
+DockerFarm is a awesome docker management tool!
 
-## Feature
+This Project deals with the DockerFarm back-end area.
 
-* Simple User Signup/login 
-* JWT Based Authentication
+## ✨ Features to be implemented
 
-## How to Use
+* EndPoint Management
+* Registry Management
+* Container Management
+* Image Management
+* Volumne Management
+* Network Management
+* Event Log
+* DashBoard
 
-Clone this project 
 
-`https://github.com/y0c/serverless-koa-boilerplate.git`
+## Getting Started
 
-Install yarn module 
+1. First, Install [yarn](https://yarnpkg.com/en/) global 
 
-`yarn`
 
-Write Configuration file to `src/config/env/env.json`
+2. Second, Clone this Project & Install node module via yarn 
 
-```javascript
-//Sample Use 
-{
-    //development config
-    "dev" : {
-        "jwtSecret" : "",
-        "hashSecret" : "",
-        "mongoUrl" : "",
-        //starting local server port
-        "port": ""
-    },
-    //production config
-    "prod" : {
-        "jwtSecret" : "",
-        "hashSecret" : "",
-        "mongoUrl" : ""
-    }
-}
+```sh
+//clone project
+git clone https://github.com/DockerFarm/DockerFarm-backend.git
+
+//move project folder
+cd DockerFarm-backend 
+
+//install node module
+yarn 
 ```
 
-It will be selected according to the serverless stage value
+3. Finally, write env file and input your config information 
 
+development - dev.env
 
-reset pacakge.json & serverless.yml 
+production - production.env
 
-`npm init & serverless create -t aws-nodejs`
-
-## Scripts
-
-* `yarn start` - starting local server
-* `yarn deploy` - deploy aws lambda (prod stage)
-* `yarn deploy:dev` - deploy aws lambda(dev stage)
-
-## License
-
-MIT 
+```sh
+JWT_SECRET=[]
+SHA256_SECRET=[]
+MONGO_URL=[]
+PORT=[]
+```
 
