@@ -1,0 +1,34 @@
+{
+  "name": "dockerfarm-backend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "http://github.com/y0c",
+  "author": "y0c <wonder789@naver.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon --inspect -w src --exec \"babel-node src\"",
+    "build": "babel src -s -D -d dist",
+    "start": "node dist",
+    "prestart": "npm run -s build"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0"
+  },
+  "dependencies": {
+    "@koa/cors": "2",
+    "app-root-path": "^2.1.0",
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
+    "dotenv": "^6.0.0",
+    "joi": "^13.4.0",
+    "jsonwebtoken": "^8.3.0",
+    "koa": "^2.5.2",
+    "koa-body": "^4.0.4",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.2.3",
+    "winston": "^3.0.0"
+  }
+}
