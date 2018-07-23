@@ -5,6 +5,7 @@ import api from 'api';
 import config from 'config';
 import cors from '@koa/cors';
 import tokenCheck from 'lib/middleware/tokenCheck';
+import passport from 'config/passport';
 
 const app = new Koa();
 
@@ -14,6 +15,7 @@ app.use(cors());
 //use koa body parser middleware
 app.use(koaBody());
 
+app.use(passport.initialize());
 app.use(api.routes())
     .use(api.allowedMethods());
 
