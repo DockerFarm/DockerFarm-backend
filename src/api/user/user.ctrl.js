@@ -3,7 +3,7 @@ export const me = async ctx => {
     const {
         email,
         username
-     } = ctx.request.user;
+     } = ctx.state.user;
 
     ctx.body = {
         email,
