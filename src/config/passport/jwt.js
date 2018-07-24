@@ -2,17 +2,26 @@ import passportJWT from 'passport-jwt';
 import User from 'db/models/User';
 import config from 'config';
 
-const ExtractJwt = passportJWT.ExtractJwt;
 const Strategy   = passportJWT.Strategy;
 
+const cookieExtractor = ctx => {
+    let token = null;
 
-var options = {  
+    if (ctx && ctx.cookies)
+    {
+        token = ctx.cookies.get('accessToken');
+    }
+    return token;
+};
+
+let options = {  
     secretOrKey: config.jwtSecret,
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT')
+    jwtFromRequest: cookieExtractor
 };
 
 
 const jwtStrategy = new Strategy(options, async (payload, done) => {
+    debugger;
     const user = await User.findByEmail(payload.email);
 
     if(!user){
