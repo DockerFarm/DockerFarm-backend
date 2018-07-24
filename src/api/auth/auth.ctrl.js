@@ -1,7 +1,6 @@
 import User from 'db/models/User';
-import jwt from 'jsonwebtoken';
 import logger from 'lib/logger';
-import config from 'config';
+import generateToken from 'lib/generateToken';
 import Joi from 'joi';
 
 export const register = async ctx => {
@@ -84,16 +83,25 @@ export const login = async ctx => {
             return ;
         }
 
-        let accessToken = jwt.sign({ email : existUser.email }, config.jwtSecret, { expiresIn : '1h'});
-        let refreshToken = jwt.sign({ email : existUser.email }, config.jwtSecret, { expiresIn : '7d'});
+        let accessToken = generateToken({ email : existUser.email });
 
-        ctx.body = {
-            accessToken,
-            refreshToken
-        };
+        ctx.cookie.set('accessToken',  accessToken, {
+            httpOnly : true,
+            expires: new Date((1000 * 60 * 60) + Date.now()) //1h
+        })
 
     } catch(e) {
         ctx.throw(e, 500);     
     }
 };
 
+
+export const socialCallback = ctx => {
+    const { email } = ctx.state.user;
+    let accessToken = generateToken({email});
+    ctx.cookies.set('accessToken', accessToken, {
+        httpOnly: true,
+        expires: new Date((1000 * 60 * 60) + Date.now()) //1h
+    });
+    ctx.redirect('/');
+}
