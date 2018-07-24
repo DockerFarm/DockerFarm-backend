@@ -6,4 +6,4 @@ jspm_packages
 .serverless
 *.log
 
-**/env.json
+**/*.env
