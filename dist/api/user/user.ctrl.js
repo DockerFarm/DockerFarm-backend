@@ -17,13 +17,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var me = exports.me = function () {
     var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx) {
-        var _ctx$request$user, email, username;
+        var _ctx$state$user, email, username;
 
         return _regenerator2.default.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
                     case 0:
-                        _ctx$request$user = ctx.request.user, email = _ctx$request$user.email, username = _ctx$request$user.username;
+                        _ctx$state$user = ctx.state.user, email = _ctx$state$user.email, username = _ctx$state$user.username;
 
 
                         ctx.body = {
