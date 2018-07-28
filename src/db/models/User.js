@@ -52,7 +52,7 @@ User.statics.localSignup = function({
     return user.save();
 };
 
-User.statics.socialSignup = function({
+User.statics.socialSignup = async function({
     email,
     provider,
     accessToken,
@@ -60,9 +60,9 @@ User.statics.socialSignup = function({
     socialId
 }) {
 
-    let existUser = this.findByEmail(email);
+    let existUser = await this.findByEmail(email);
 
-    if(!exustUser) {
+    if(!existUser) {
         existUser = new this({
             email,
             username,
@@ -74,17 +74,13 @@ User.statics.socialSignup = function({
             }
         });
     } else {
-        existUser.update({
-            social: {
-                [provider]: {
-                    id: socialId,
-                    accessToken: accessToken
-                }
-            }
-        })
+        existUser.social[provider] = {
+            id : socialId,
+            accessToken
+        };
     }
 
-    return user.save();
+    return existUser.save();
 }
 
 User.statics.findBySocialId = function({

@@ -10,6 +10,7 @@ const router = new Router();
 
 router.post('/register', authCtrl.register);
 router.post('/login', authCtrl.login);
+
 router.get('/github', githubAuth());
 router.get('/github/callback', githubAuth({failureRedirect : '/unAuthorized'}), authCtrl.socialCallback);
 
