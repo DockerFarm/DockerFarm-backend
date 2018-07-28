@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.login = exports.register = undefined;
+exports.socialCallback = exports.login = exports.register = undefined;
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -17,17 +17,13 @@ var _User = require('../../db/models/User');
 
 var _User2 = _interopRequireDefault(_User);
 
-var _jsonwebtoken = require('jsonwebtoken');
-
-var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
-
 var _logger = require('../../lib/logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var _config = require('../../config');
+var _generateToken = require('../../lib/generateToken');
 
-var _config2 = _interopRequireDefault(_config);
+var _generateToken2 = _interopRequireDefault(_generateToken);
 
 var _joi = require('joi');
 
@@ -114,7 +110,7 @@ var register = exports.register = function () {
 
 var login = exports.login = function () {
     var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx) {
-        var _ctx$request$body2, email, password, schema, validateResult, existUser, accessToken, refreshToken;
+        var _ctx$request$body2, email, password, schema, validateResult, existUser, accessToken;
 
         return _regenerator2.default.wrap(function _callee2$(_context2) {
             while (1) {
@@ -166,34 +162,44 @@ var login = exports.login = function () {
                         return _context2.abrupt('return');
 
                     case 19:
-                        accessToken = _jsonwebtoken2.default.sign({ email: existUser.email }, _config2.default.jwtSecret, { expiresIn: '1h' });
-                        refreshToken = _jsonwebtoken2.default.sign({ email: existUser.email }, _config2.default.jwtSecret, { expiresIn: '7d' });
+                        accessToken = (0, _generateToken2.default)({ email: existUser.email });
 
 
-                        ctx.body = {
-                            accessToken: accessToken,
-                            refreshToken: refreshToken
-                        };
+                        ctx.cookie.set('accessToken', accessToken, {
+                            httpOnly: true,
+                            expires: new Date(1000 * 60 * 60 + Date.now()) //1h
+                        });
 
-                        _context2.next = 27;
+                        _context2.next = 26;
                         break;
 
-                    case 24:
-                        _context2.prev = 24;
+                    case 23:
+                        _context2.prev = 23;
                         _context2.t0 = _context2['catch'](7);
 
                         ctx.throw(_context2.t0, 500);
 
-                    case 27:
+                    case 26:
                     case 'end':
                         return _context2.stop();
                 }
             }
-        }, _callee2, undefined, [[7, 24]]);
+        }, _callee2, undefined, [[7, 23]]);
     }));
 
     return function login(_x2) {
         return _ref2.apply(this, arguments);
     };
 }();
+
+var socialCallback = exports.socialCallback = function socialCallback(ctx) {
+    var email = ctx.state.user.email;
+
+    var accessToken = (0, _generateToken2.default)({ email: email });
+    ctx.cookies.set('accessToken', accessToken, {
+        httpOnly: true,
+        expires: new Date(1000 * 60 * 60 + Date.now()) //1h
+    });
+    ctx.redirect('/');
+};
 //# sourceMappingURL=auth.ctrl.js.map

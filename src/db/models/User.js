@@ -59,16 +59,30 @@ User.statics.socialSignup = function({
     username,
     socialId
 }) {
-    let user = new this({
-        email,
-        username,
-        social: {
-            [provider]: {
-                id: socialId,
-                accessToken: accessToken
+
+    let existUser = this.findByEmail(email);
+
+    if(!exustUser) {
+        existUser = new this({
+            email,
+            username,
+            social: {
+                [provider]: {
+                    id: socialId,
+                    accessToken: accessToken
+                }
             }
-        }
-    });
+        });
+    } else {
+        existUser.update({
+            social: {
+                [provider]: {
+                    id: socialId,
+                    accessToken: accessToken
+                }
+            }
+        })
+    }
 
     return user.save();
 }
@@ -77,10 +91,7 @@ User.statics.findBySocialId = function({
     provider,
     id
 }) {
-    return this.findOne()
-                .where('social.provider').equals(provider)
-                .where('social.provider.id').equals(id)
-                .exec();
+    return this.findOne({ [`social.${provider}.id`]: id }).exec();
 }
 
 

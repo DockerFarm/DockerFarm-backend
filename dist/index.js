@@ -28,6 +28,8 @@ var _tokenCheck = require('./lib/middleware/tokenCheck');
 
 var _tokenCheck2 = _interopRequireDefault(_tokenCheck);
 
+var _passport = require('./config/passport');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = new _koa2.default();
@@ -38,7 +40,8 @@ app.use((0, _cors2.default)());
 //use koa body parser middleware
 app.use((0, _koaBody2.default)());
 
-app.use((0, _tokenCheck2.default)()).use(_api2.default.routes()).use(_api2.default.allowedMethods());
+app.use(_passport.passport.initialize());
+app.use(_api2.default.routes()).use(_api2.default.allowedMethods());
 
 app.listen(_config2.default.port);
 //# sourceMappingURL=index.js.map

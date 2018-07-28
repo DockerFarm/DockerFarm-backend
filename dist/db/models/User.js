@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
 var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
@@ -25,6 +29,11 @@ var User = new Schema({
     email: String,
     password: String,
     username: String,
+    endpoints: [{
+        url: { type: String },
+        name: { type: String },
+        isActive: { type: Boolean }
+    }],
     createdAt: {
         type: Date,
         default: Date.now
@@ -38,7 +47,7 @@ var User = new Schema({
             id: String,
             accessToken: String
         },
-        facebook: {
+        github: {
             id: String,
             accessToken: String
         }
@@ -46,7 +55,7 @@ var User = new Schema({
 });
 
 var encryptPassword = function encryptPassword(password) {
-    return _crypto2.default.createHmac('sha256', _config2.default.hashSecret).update(password).digest('hex');
+    return _crypto2.default.createHmac('sha256', _config2.default.sha256Secret).update(password).digest('hex');
 };
 
 User.statics.localSignup = function (_ref) {
@@ -61,6 +70,44 @@ User.statics.localSignup = function (_ref) {
     });
 
     return user.save();
+};
+
+User.statics.socialSignup = function (_ref2) {
+    var email = _ref2.email,
+        provider = _ref2.provider,
+        accessToken = _ref2.accessToken,
+        username = _ref2.username,
+        socialId = _ref2.socialId;
+
+
+    var existUser = this.findByEmail(email);
+
+    if (!exustUser) {
+        existUser = new this({
+            email: email,
+            username: username,
+            social: (0, _defineProperty3.default)({}, provider, {
+                id: socialId,
+                accessToken: accessToken
+            })
+        });
+    } else {
+        existUser.update({
+            social: (0, _defineProperty3.default)({}, provider, {
+                id: socialId,
+                accessToken: accessToken
+            })
+        });
+    }
+
+    return user.save();
+};
+
+User.statics.findBySocialId = function (_ref3) {
+    var provider = _ref3.provider,
+        id = _ref3.id;
+
+    return this.findOne((0, _defineProperty3.default)({}, 'social.' + provider + '.id', id)).exec();
 };
 
 User.statics.findByEmail = function (email) {
