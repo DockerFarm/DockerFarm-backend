@@ -31,7 +31,14 @@ node {
         stage('Deploy') {
             sh 'docker pull localhost:5000/dockerfarm-backend'
             sh 'docker rm -f dockerfarm-backend || true'
-            sh 'docker run -d -p 3000:3000 --restart always --name dockerfarm-backend -v /home/dockerfarm/dockerfarm-backend/prod.env:/usr/src/app/env/prod.env localhost:5000/dockerfarm-backend'
+            sh '''
+                docker run -d -p 3000:3000 \n \ 
+                --restart always \n \ 
+                --name dockerfarm-backend \n \
+                -v /home/dockerfarm/dockerfarm-backend/prod.env:/usr/src/app/env/prod.env \n \
+                localhost:5000/dockerfarm-backend \n \
+            '''
+
         }
     } catch (err) {
         currentBuild.result = "FAILED"
