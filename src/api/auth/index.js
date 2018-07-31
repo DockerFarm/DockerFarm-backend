@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import config from 'config';
 import * as authCtrl from './auth.ctrl';
 import {
     passport,
@@ -12,9 +13,9 @@ router.post('/register', authCtrl.register);
 router.post('/login', authCtrl.login);
 
 router.get('/github', githubAuth());
-router.get('/github/callback', githubAuth({failureRedirect : '/unAuthorized'}), authCtrl.socialCallback);
+router.get('/github/callback', githubAuth({failureRedirect : `${config.frontUrl}/unAuthorized`}), authCtrl.socialCallback);
 
 router.get('/google', googleAuth());
-router.get('/google/callback', googleAuth({failureRedirect : '/unAuthorized'}), authCtrl.socialCallback);
+router.get('/google/callback', googleAuth({failureRedirect : `${config.frontUrl}/unAuthorized`}), authCtrl.socialCallback);
 
 export default router;
