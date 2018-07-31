@@ -32,11 +32,11 @@ node {
             sh 'docker pull localhost:5000/dockerfarm-backend'
             sh 'docker rm -f dockerfarm-backend || true'
             sh '''
-                docker run -d -p 3000:3000 \n \ 
-                --restart always \n \ 
-                --name dockerfarm-backend \n \
-                -v /home/dockerfarm/dockerfarm-backend/production.env:/usr/src/app/env/production.env \n \
-                localhost:5000/dockerfarm-backend \n \
+                docker run -d -p 3000:3000  \
+                --restart always \
+                --name dockerfarm-backend \
+                -v /home/dockerfarm/dockerfarm-backend/production.env:/usr/src/app/env/production.env \
+                localhost:5000/dockerfarm-backend \
             '''
 
         }
