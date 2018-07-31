@@ -35,7 +35,7 @@ node {
                 docker run -d -p 3000:3000 \n \ 
                 --restart always \n \ 
                 --name dockerfarm-backend \n \
-                -v /home/dockerfarm/dockerfarm-backend/prod.env:/usr/src/app/env/prod.env \n \
+                -v /home/dockerfarm/dockerfarm-backend/production.env:/usr/src/app/env/production.env \n \
                 localhost:5000/dockerfarm-backend \n \
             '''
 
