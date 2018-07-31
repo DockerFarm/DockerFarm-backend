@@ -3,6 +3,7 @@ export default (env) => ({
     jwtSecret: env.JWT_SECRET,
     sha256Secret : env.SHA256_SECRET,
     mongoUrl : env.MONGO_URL,
+    frontUrl : env.FRONT_URL,
     port: env.PORT,
     github : {
         clientId : env.GITHUB_CLIENT_ID,
