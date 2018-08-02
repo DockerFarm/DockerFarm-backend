@@ -20,8 +20,10 @@
   "dependencies": {
     "@koa/cors": "2",
     "app-root-path": "^2.1.0",
+    "axios": "^0.18.0",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
+    "boom": "^7.2.0",
     "dotenv": "^6.0.0",
     "joi": "^13.4.0",
     "jsonwebtoken": "^8.3.0",
@@ -33,6 +35,8 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^1.0.0",
     "passport-jwt": "^4.0.0",
+    "tcp-ping": "^0.1.1",
+    "url-parse": "^1.4.3",
     "winston": "^3.0.0"
   }
 }
