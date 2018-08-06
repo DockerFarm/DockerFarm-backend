@@ -27,6 +27,14 @@ const User = new Schema({
     }
 });
 
+User.virtual('endpoint')
+    .get(function() {
+        return this.__endpoint;
+    })
+    .set(function(v) {
+        this.__endpoint = v;
+    });
+
 const encryptPassword = password => {
     return crypto.createHmac('sha256', config.sha256Secret).update(password).digest('hex');
 };

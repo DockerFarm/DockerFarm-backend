@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const ObjectId = mongoose.Types.ObjectId;
 const EndPoint = new Schema({
-    url: { type : String, unique: true },
+    url: { type : String},
     name : { type: String, unique: true },
     tls: { type: Boolean, default: false },
     isActive : { type : Boolean, default: false },
@@ -17,6 +17,8 @@ const EndPoint = new Schema({
         default: Date.now    
     }
 });
+
+
 
 EndPoint.statics.addEndpoint = function({
     url,
@@ -34,6 +36,26 @@ EndPoint.statics.addEndpoint = function({
     });
 
     return endpoint.save();
+}
+
+EndPoint.statics.selectEndpoint = function({
+    url,
+    name, 
+    userId,
+    endpointId
+}) {
+    return this.find({
+                 $and: [
+                     { userId: new ObjectId(userId) },
+                     { $or: [ {url}, {name}]} ]}
+                 )
+                .exec();
+}
+
+EndPoint.statics.selectActiveEndpoint = function({
+    userId
+}) {
+    return this.findOne({ "userId": new ObjectId(userId), "isActive": true }).exec();
 }
 
 EndPoint.statics.selectEndpointsByUserId = function({
@@ -66,8 +88,10 @@ EndPoint.statics.updateEndpoint = function({
     }).exec();
 }
 
-EndPoint.statics.unActiveAll = function() {
-    return this.update({}, {isActive: false}, {multi: true}).exec();
+EndPoint.statics.unActiveAll = function({
+    userId
+}) {
+    return this.update({userId: new ObjectId(userId)}, {isActive: false}, {multi: true}).exec();
 }
 
 export default mongoose.model('EndPoint', EndPoint);
