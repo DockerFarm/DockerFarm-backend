@@ -1,5 +1,6 @@
 import passportJWT from 'passport-jwt';
 import User from 'db/models/User';
+import Endpoint from 'db/models/Endpoint';
 import config from 'config';
 
 const Strategy   = passportJWT.Strategy;
@@ -20,7 +21,11 @@ let options = {
 
 
 const jwtStrategy = new Strategy(options, async (payload, done) => {
-    const user = await User.findByEmail(payload.email);
+    
+    let user = await User.findByEmail(payload.email);
+    let activeEndpoint = await Endpoint.selectActiveEndpoint({userId: user._id});
+
+    user.endpoint = activeEndpoint; 
 
     if(!user){
         return done(new Error("User not found"), null);
