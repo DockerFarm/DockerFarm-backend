@@ -26,6 +26,20 @@ export const addEndpoint = async ctx => {
         return;
     };
 
+    try {
+        const result = await Endpoint.selectEndpoint({ userId: id, url, name });
+
+        if( result.length > 0 ){
+            ctx.status = 409;
+            ctx.body = {
+                type: 'DuplicateError',
+                message: 'url or name already exists!'
+            }
+        }
+    }catch(e){
+        ctx.throw(e, 500);
+    }
+
     const parsedUrl = parse(url);
     const host = parsedUrl.hostname;
     const port = parsedUrl.port;
@@ -44,7 +58,7 @@ export const addEndpoint = async ctx => {
 
     try { 
         if (isActive) {
-            await Endpoint.unActiveAll()
+            await Endpoint.unActiveAll({userId: id})
         }
         const user = await Endpoint.addEndpoint({
             userId: id,
@@ -56,19 +70,12 @@ export const addEndpoint = async ctx => {
         
         ctx.status = 200;
     } catch(e) {
-        if( e.code === 11000 ) {
-            ctx.status = 409;
-            ctx.body = {
-                type: 'DuplicateError',
-                message: 'endpoint url, name is unique'
-            };
-            return;
-        }
         ctx.throw(e, 500);
     }
 }
 
 export const updateEndpoint = async ctx => {
+    const { id } = ctx.state.user;
     const endpointId = ctx.params.id;
     const { name, url, tls, isActive } = ctx.request.body;
 
@@ -92,6 +99,28 @@ export const updateEndpoint = async ctx => {
         return;
     };
 
+    try {
+        const result = await Endpoint.selectEndpoint({ 
+            userId: id,
+            url,
+            name
+        });
+
+        const filtered = result.filter( v => v._id != endpointId );
+
+        if( filtered.length > 0 ){
+            ctx.status = 409;
+            ctx.body = {
+                type: 'DuplicateError',
+                message: 'url or name already exists!'
+            }
+            return;
+        }
+
+    }catch(e){
+        ctx.throw(e, 500);
+    }
+
     const parsedUrl = parse(url);
     const host = parsedUrl.hostname;
     const port = parsedUrl.port;
@@ -109,7 +138,7 @@ export const updateEndpoint = async ctx => {
 
     try { 
         if (isActive) {
-            await Endpoint.unActiveAll();
+            await Endpoint.unActiveAll({ userId: id});
         }
         const user = await Endpoint.updateEndpoint({
             _id: endpointId,
@@ -132,7 +161,6 @@ export const selectEndpoints = async ctx => {
     
     try{
         const result = await Endpoint.selectEndpointsByUserId({userId : id});
-
         ctx.status = 200;
         ctx.body = { data: result };
     } catch(e) {
