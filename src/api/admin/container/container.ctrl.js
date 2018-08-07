@@ -16,7 +16,8 @@ export const getContainerInfo = async ctx => {
     const { id } = ctx.params;
     
     try {
-        const { data } = await ContainerApi.getContainerInfo({url, id});
+
+        const data = await ContainerApi.getContainerInfo({url, id});
         ctx.status = 200;
         ctx.body = { result: data};
     } catch(e) {
