@@ -6,7 +6,6 @@ const router = new Router();
 router.get('/', containerCtrl.getContainerList);
 router.get('/:id', containerCtrl.getContainerInfo);
 router.get('/:id/raw', containerCtrl.getContainerInspectRaw);
-router.post('/:id/start', containerCtrl.startContainer);
-router.post('/:id/stop', containerCtrl.stopContainer);
+router.post('/:id/:command', containerCtrl.commandToContainer);
 
 export default router;

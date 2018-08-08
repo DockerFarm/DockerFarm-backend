@@ -69,7 +69,12 @@ export const getContainerInfo = ({url, id}) =>
                 }
             }
         });
+
 export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`); 
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);
 export const restartContainer = ({url, id}) => axios.post(`${url}/containers/${id}/restart`);
 export const killContainer = ({url, id}) => axios.post(`${url}/containers/${id}/kill`);
+export const pauseContainer = ({url, id}) => axios.post(`${url}/containers/${id}/pause`);
+export const resumeContainer = ({url, id}) => axios.post(`${url}/containers/${id}/unpause`);
+export const updateContainer = ({url, id, form}) => axios.post(`${url}/containers/${id}/update`, form);
+export const removeContainer = ({url, id}) => axios.delete(`${url}/containers/${id}`);
