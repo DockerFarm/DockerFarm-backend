@@ -46,7 +46,7 @@ export const getImageInfo = ({url, id}) =>
                     architecture: get(data, 'Architecture', ''),
                 },
                 detail: {
-                    volume: get(data, 'Config.Volumes', ''),
+                    volume: keys(get(data, 'Config.Volumes', '')),
                     entrypoint: get(data, 'Config.Entrypoint', ''),
                     port: keys(get(data, 'ContainerConfig.ExposedPorts', '')),
                     env: get(data, 'Config.Env', ''),
