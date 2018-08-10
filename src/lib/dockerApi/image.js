@@ -53,3 +53,9 @@ export const getImageHistory = ({url, id}) =>
 
 
 export const getImageInspectRaw = ({url, id}) => axios.get(`${url}/images/${id}/json`);
+
+export const tagImage = ({url, id, repo, tag}) => axios.post(`${url}/images/${id}/tag?force=0&repo=${repo}&tag=${tag}`);
+
+export const pullImage = ({url, image, tag}) => axios.post(`${url}/images/create?fromImage=${image}&tag=${tag}`);
+
+export const deleteImage = ({url, id}) => axios.delete(`${url}/images/${id}`);
