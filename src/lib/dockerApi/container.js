@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, forIn, filter } from 'lodash';
+import { get, keys, isArray, filter, map } from 'lodash';
 
 /**
  * Container Process List All  
@@ -47,6 +47,7 @@ export const getContainerInfo = ({url, id}) =>
         .then( resp => {
             const { data } = resp;
             const state = get(data, 'State', {});
+            const command = get(data, 'Config.Cmd', []);
 
             return {
                 info : {
@@ -61,12 +62,20 @@ export const getContainerInfo = ({url, id}) =>
                 },
                 detail: {
                     image: get(data, 'Image', ''),
-                    command: get(data, 'Config.Cmd', []).join(' '),
+                    command: (!isArray(command) ? [] : command).join(' ') ,
                     env: get(data, 'Config.Env', []),
                     labels: get(data, 'Config.Labels', {}),
                     restartPolicy: get(data, 'HostConfig.RestartPolicy.Name', ''),
                     maxRetryCount: get(data, 'HostConfig.RestartPolicy.MaximumRetryCount',0)
-                }
+                },
+                volume: map(get(data,'Mounts',[]), v => ({
+                    type: get(v, 'Type', ''),
+                    src: get(v, 'Source', ''),
+                    dest: get(v, 'Destination', ''),
+                    mode: get(v, 'Mode')
+                }))
+                    
+                
             }
         });
 
