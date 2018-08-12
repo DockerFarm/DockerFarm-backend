@@ -1,5 +1,28 @@
 import * as ImageApi from 'lib/dockerApi/image';
-import * as utility from 'lib/utility/utility';
+
+const extractNameAndTag = (imageName, registry) => {
+  /* imageName.image = post body value */
+  const imageNameAndTag = imageName.image.split(':');
+  let image = imageNameAndTag[0];
+  const tag = imageNameAndTag[1] ? imageNameAndTag[1] : 'latest';
+  if (registry) {
+      image = registry + '/' + imageNameAndTag[0];
+    }
+
+    return {
+      image: image,
+      tag: tag
+    };
+}
+
+const extractRepoAndTag = (tagName) => {
+  const imageRepoAndTag = extractNameAndTag(tagName);
+
+  return {
+    repo: imageRepoAndTag.image,
+    tag: imageRepoAndTag.tag
+  };
+}
 
 export const getImageList = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
@@ -41,7 +64,7 @@ export const getImageInspectRaw = async ctx => {
 
 export const pullImage = async ctx => {
   const { endpoint: {url} } = ctx.state.user;
-  const { image, tag } = utility.extractNameAndTag(ctx.request.body);
+  const { image, tag } = extractNameAndTag(ctx.request.body);
 
   try {
       const { data } = await ImageApi.pullImage({url, image, tag});
@@ -55,7 +78,7 @@ export const pullImage = async ctx => {
 export const tagImage = async ctx => {
   const { endpoint: {url} } = ctx.state.user;
   const { id } = ctx.params;
-  const { repo, tag } = utility.extractRepoAndTag(ctx.request.body);
+  const { repo, tag } = extractRepoAndTag(ctx.request.body);
 
   try {
     const { data } = await ImageApi.tagImage({url, id, repo, tag});

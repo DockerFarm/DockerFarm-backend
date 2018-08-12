@@ -14,28 +14,3 @@ export const getDateFromTimeStamp = (timestamp) => {
 export const getDate = (date) => {
   return moment(date).format('YYYY-MM-DD');
 }
-
-
-export const extractNameAndTag = (imageName, registry) => {
-  /* imageName.image = post body value */
-  const imageNameAndTag = imageName.image.split(':');
-  let image = imageNameAndTag[0];
-  const tag = imageNameAndTag[1] ? imageNameAndTag[1] : 'latest';
-  if (registry) {
-      image = registry + '/' + imageNameAndTag[0];
-    }
-
-    return {
-      image: image,
-      tag: tag
-    };
-}
-
-export const extractRepoAndTag = (tagName) => {
-  const imageRepoAndTag = extractNameAndTag(tagName);
-
-  return {
-    repo: imageRepoAndTag.image,
-    tag: imageRepoAndTag.tag
-  };
-}
