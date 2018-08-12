@@ -32,7 +32,8 @@ export const getImageInfo = ({url, id}) =>
                 },
                 detail: {
                     volume: keys(get(data, 'Config.Volumes', '')),
-                    entrypoint: get(data, 'Config.Entrypoint', ''),
+                    entrypoint: get(data, 'Config.Entrypoint', '-'),
+                    cmd: get(data, 'Config.Cmd', '-'),
                     port: keys(get(data, 'ContainerConfig.ExposedPorts', '')),
                     env: get(data, 'Config.Env', ''),
                 }
