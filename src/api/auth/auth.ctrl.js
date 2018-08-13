@@ -98,6 +98,14 @@ export const login = async ctx => {
     }
 };
 
+export const logout = ctx => {
+    ctx.cookies.set('accessToken', null, {
+        maxAge: 0,
+        httpOnly: true
+    });
+    ctx.status = 204;
+}
+
 
 export const socialCallback = ctx => {
     const { email } = ctx.state.user;
