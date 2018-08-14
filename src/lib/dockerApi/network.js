@@ -44,5 +44,4 @@ export const getNetworkInfo = (url, id) =>
 
 export const getNetworkInspectRaw = ({url, id}) => axios.get(`${url}/networks/${id}`);
 export const deleteNetwork = ({url, id}) => axios.delete(`${url}/networks/${id}`);
-//need to fix createNetwork
 export const createNetwork = (url, form) => axios.post(`${url}/networks/create`, form);
