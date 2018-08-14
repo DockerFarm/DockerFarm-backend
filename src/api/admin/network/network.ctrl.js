@@ -49,14 +49,12 @@ export const deleteNetwork = async ctx => {
   }
 }
 
-
-// need to fix
-export const addNetwork = async ctx => {
+export const createNetwork = async ctx => {
   const { endpoint: {url} } = ctx.state.user;
-  const body = ctx.request.body;
+  const form = ctx.request.body;
 
   try {
-    const { data }  = await NetworkApi.addNetwork(url);
+    const { data }  = await NetworkApi.createNetwork(url, form);
     ctx.status = 201;
     ctx.body = { result: data };
   } catch(e) {
