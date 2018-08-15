@@ -6,6 +6,7 @@ export const getNetworkList = (url) =>
         .then(resp => {
           const transformObject = v => {
               return {
+                id: get(v, 'Id', '').slice(0,12),
                 name: get(v,'Name',''),
                 scope: get(v,'Scope','-'),
                 driver: get(v,'Driver','-'),
@@ -21,7 +22,7 @@ export const getNetworkInfo = (url, id) =>
     axios.get(`${url}/networks/${id}`)
         .then(resp => {
             const { data } = resp;
-            const id = keys(get(data, 'Containers', ''));
+            const containers = keys(get(data, 'Containers', ''));
 
 
               return {
@@ -33,15 +34,17 @@ export const getNetworkInfo = (url, id) =>
                     subnet: get(data, 'IPAM.Config[0].Subnet','-'),
                     gateway: get(data, 'IPAM.Config[0].Gateway','-'),
                 },
-                container: {
-                    name: get(data, `Containers.${id}.Name`, ''),
-                    ipv4: get(data, `Containers.${id}.IPv4Address`, '-'),
-                    ipv6: get(data, `Containers.${id}.IPv6Address`, '-'),
-                    mac: get(data, `Containers.${id}.MacAddress`, '-'),
-                }
+                options: get(data, 'Options'),
+                container: containers.map( v => ({
+                    name: get(data, `Containers.${v}.Name`, ''),
+                    ipv4: get(data, `Containers.${v}.IPv4Address`, '-'),
+                    ipv6: get(data, `Containers.${v}.IPv6Address`, '-'),
+                    mac: get(data, `Containers.${v}.MacAddress`, '-'),
+                }))
               }
       });
 
+export const disconnectNetwork = ({url, id}) => axios.post(`${url}/networks/${id}/disconnect`);
 export const getNetworkInspectRaw = ({url, id}) => axios.get(`${url}/networks/${id}`);
 export const deleteNetwork = ({url, id}) => axios.delete(`${url}/networks/${id}`);
 export const createNetwork = (url, form) => axios.post(`${url}/networks/create`, form);
