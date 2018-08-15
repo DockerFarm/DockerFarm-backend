@@ -49,6 +49,19 @@ export const deleteNetwork = async ctx => {
   }
 }
 
+export const disconnectNetwork = async ctx => {
+  const { endpoint: {url} } = ctx.state.user;
+  const { id } = ctx.params;
+
+  try {
+      const { data } = await NetworkApi.disconnectNetwork({url, id});
+      ctx.status = 200;
+      ctx.body = { result: data };
+  } catch(e) {
+      ctx.throw(e, 500);
+  }
+}
+
 export const createNetwork = async ctx => {
   const { endpoint: {url} } = ctx.state.user;
   const form = ctx.request.body;
