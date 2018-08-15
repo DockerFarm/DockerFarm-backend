@@ -8,5 +8,6 @@ router.get('/:id', networkCtrl.getNetworkInfo);
 router.get('/:id/raw', networkCtrl.getNetworkInspectRaw);
 router.delete('/:id', networkCtrl.deleteNetwork);
 router.post('/', networkCtrl.createNetwork);
+router.post('/:id/disconnect', networkCtrl.disconnectNetwork);
 
 export default router;
