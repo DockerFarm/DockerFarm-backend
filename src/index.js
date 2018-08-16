@@ -9,7 +9,6 @@ import { passport } from 'config/passport';
 
 const app = new Koa();
 
-db.connect();
 //use koa cors middleware
 app.use(cors({
     'origin':'http://dockerfarm.cf',
@@ -24,4 +23,7 @@ app.use(api.routes())
 
 
 
-app.listen(config.port);
+db.connect().then( _ => {
+
+    app.listen(config.port);
+})
