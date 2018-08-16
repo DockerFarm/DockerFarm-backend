@@ -12,9 +12,9 @@ export default {
                 .then( result => {
                     logger.info('Database Connect Success');
                 })
-                .catch( e => {
-                    logger.error(e.message);
-                })
+                // .catch( e => {
+                //     logger.error(e.message);
+                // })
     },
     disconnect() {
         return mongoose.disconnect();
