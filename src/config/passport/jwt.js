@@ -1,6 +1,6 @@
 import passportJWT from 'passport-jwt';
 import User from 'db/models/User';
-import Endpoint from 'db/models/Endpoint';
+import Endpoint from 'db/models/EndPoint';
 import config from 'config';
 
 const Strategy   = passportJWT.Strategy;

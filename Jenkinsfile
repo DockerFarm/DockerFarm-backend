@@ -31,6 +31,7 @@ node {
         stage('Deploy') {
             sh 'docker pull localhost:5000/dockerfarm-backend'
             sh 'docker rm -f dockerfarm-backend || true'
+            sh 'docker system prune -af'
             sh '''
                 docker run -d -p 3000:3000  \
                 --restart always \
