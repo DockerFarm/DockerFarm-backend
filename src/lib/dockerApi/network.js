@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys} from 'lodash';
+import { get, keys, reduce} from 'lodash';
 
 export const getNetworkList = (url) =>
     axios.get(`${url}/networks`)
@@ -36,6 +36,7 @@ export const getNetworkInfo = (url, id) =>
                 },
                 options: get(data, 'Options'),
                 container: containers.map( v => ({
+                    id: v,
                     name: get(data, `Containers.${v}.Name`, ''),
                     ipv4: get(data, `Containers.${v}.IPv4Address`, '-'),
                     ipv6: get(data, `Containers.${v}.IPv6Address`, '-'),
@@ -44,7 +45,30 @@ export const getNetworkInfo = (url, id) =>
               }
       });
 
-export const disconnectNetwork = ({url, id}) => axios.post(`${url}/networks/${id}/disconnect`);
+export const disconnectNetwork = ({url, id, form}) => axios.post(`${url}/networks/${id}/disconnect`, {
+    "Container": form.id,
+    "Force": true 
+});
 export const getNetworkInspectRaw = ({url, id}) => axios.get(`${url}/networks/${id}`);
 export const deleteNetwork = ({url, id}) => axios.delete(`${url}/networks/${id}`);
-export const createNetwork = (url, form) => axios.post(`${url}/networks/create`, form);
+export const createNetwork = (url, form) => axios.post(`${url}/networks/create`, {
+    "CheckDuplicate": true,
+	"Driver" : form.driver,
+	"IPAM": {
+		"Driver": "default",
+		"config": [{
+			"Subnet": form.subnet,
+			"Gateway": form.gateway 
+		}]
+	},
+	"Internal": form.internal,
+	"Labels": reduce(form.labels, (acc, obj) => {
+        acc[obj.key] = obj.value;
+        return acc;
+    },{}),
+	"Name": form.name,
+	"Options": reduce(form.options, (acc, obj) => {
+        acc[obj.key] = obj.value;
+        return acc;
+    },{})
+});
