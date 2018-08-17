@@ -18,9 +18,11 @@ export const getVolumeInfo = (url, id) =>
         .then(resp => {
           const  { data } = resp;
           return {
-            name: get(data, 'Name', '-'),
-            mountpath: get(data,'Mountpoint', '-'),
-            driver: get(data, 'Driver', '-'),
+            volume: {
+              name: get(data, 'Name', '-'),
+              mountpath: get(data,'Mountpoint', '-'),
+              driver: get(data, 'Driver', '-'),
+            }
           }
     });
 export const getVolumeInspectRaw = (url, id) => axios.get(`${url}/volumes/${id}`);
