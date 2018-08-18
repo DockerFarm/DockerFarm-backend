@@ -30,8 +30,9 @@ export const getVolumeInspectRaw = async ctx => {
   const { id } = ctx.params;
   try {
       const { data } = await VolumeApi.getVolumeInspectRaw(url,id);
+      const  container  = await VolumeApi.getVolumeRelateContainer(url,id);
       ctx.status = 200;
-      ctx.body = { result: data };
+      ctx.body = { result: data, container };
   } catch(e) {
       ctx.throw(e, 500);
   }
@@ -59,4 +60,15 @@ export const createVolume = async ctx => {
   } catch(e) {
       ctx.throw(e, 500);
   }
+}
+
+export const getVolumeDriver = async ctx => {
+    const { endpoint: { url } } = ctx.state.user;
+        try {
+            const data = await VolumeApi.getVolumeDriver(url);
+            ctx.status = 200;
+            ctx.body = { result: data };
+        } catch(e) {
+            ctx.throw(e, 500);
+        }
 }

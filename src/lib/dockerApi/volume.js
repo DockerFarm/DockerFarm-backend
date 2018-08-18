@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, size } from 'lodash';
+import { get, keys, size, reduce, isBoolean } from 'lodash';
 
 export const getVolumeList = (url) =>
     axios.get(`${url}/volumes`)
@@ -25,9 +25,43 @@ export const getVolumeInfo = (url, id) =>
             }
           }
     });
+
 export const getVolumeInspectRaw = (url, id) => axios.get(`${url}/volumes/${id}`);
+
+export const getVolumeRelateContainer = (url, id) =>
+    axios.get(`${url}/containers/json?all=1&filters={"volume": ["${id}"]}`)
+        .then(resp => {
+            const transformObject = v => {
+                const mount = get(v, 'Mounts[0]', '');
+                return {
+                    name: get(v, 'Names[0]', '').substring(1),
+                    mountat: get(mount, 'Destination', ''),
+                    readonly: isBoolean(v, 'RW', ''),
+                }
+            };
+            return resp.data.map(transformObject);
+        });
+
+export const getVolumeDriver = (url) =>
+    axios.get(`${url}/info`)
+        .then( resp => {
+            const { data } = resp;
+
+            return {
+                Driver: get(data, 'Plugins.Volume', '' ),
+            }
+        });
+
 export const deleteVolume = (url, id) => axios.delete(`${url}/volumes/${id}`);
-export const createVolume = (url, form) => axios.post(`${url}/volumes/create`,form);
+
+export const createVolume = (url, form) => axios.post(`${url}/volumes/create`, {
+    "Name" : form.name,
+    "Driver" : form.driver,
+    "DriverOpts": reduce(form.options, (acc, obj) => {
+        acc[obj.key] = obj.value;
+        return acc;
+    },{})
+});
 
 export const volumeCount = (url) =>
     axios.get(`${url}/volumes`)
