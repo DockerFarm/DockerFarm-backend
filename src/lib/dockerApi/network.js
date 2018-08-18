@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, reduce} from 'lodash';
+import { get, keys, size, reduce} from 'lodash';
 
 export const getNetworkList = (url) =>
     axios.get(`${url}/networks`)
@@ -43,11 +43,12 @@ export const getNetworkInfo = (url, id) =>
                     mac: get(data, `Containers.${v}.MacAddress`, '-'),
                 }))
               }
-      });
+          });
+
 
 export const disconnectNetwork = ({url, id, form}) => axios.post(`${url}/networks/${id}/disconnect`, {
     "Container": form.id,
-    "Force": true 
+    "Force": true
 });
 export const getNetworkInspectRaw = ({url, id}) => axios.get(`${url}/networks/${id}`);
 export const deleteNetwork = ({url, id}) => axios.delete(`${url}/networks/${id}`);
@@ -58,7 +59,7 @@ export const createNetwork = (url, form) => axios.post(`${url}/networks/create`,
 		"Driver": "default",
 		"config": [{
 			"Subnet": form.subnet,
-			"Gateway": form.gateway 
+			"Gateway": form.gateway
 		}]
 	},
 	"Internal": form.internal,
@@ -72,3 +73,12 @@ export const createNetwork = (url, form) => axios.post(`${url}/networks/create`,
         return acc;
     },{})
 });
+
+export const networkCount = (url) =>
+    axios.get(`${url}/networks`)
+        .then( resp => {
+            const { data } = resp;
+            return {
+                network: size(data)
+            }
+        });
