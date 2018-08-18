@@ -30,8 +30,9 @@ export const getVolumeInspectRaw = async ctx => {
   const { id } = ctx.params;
   try {
       const { data } = await VolumeApi.getVolumeInspectRaw(url,id);
+      const  container  = await VolumeApi.getVolumeRelateContainer(url,id);
       ctx.status = 200;
-      ctx.body = { result: data };
+      ctx.body = { result: data, container };
   } catch(e) {
       ctx.throw(e, 500);
   }
