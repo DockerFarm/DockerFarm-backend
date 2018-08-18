@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { get, map } from 'lodash';
 
-export const getRepoList = (page, pagesize) =>
-    axios.get(`https://hub.docker.com/v2/repositories/library/?page=${page}&page_size=15`)
+export const getRepoList = (size, page_size) =>
+    axios.get(`https://hub.docker.com/v2/repositories/library/?page=${size}&page_size=${page_size}`)
     .then(resp => {
         const transformObject = v => {
             return {
