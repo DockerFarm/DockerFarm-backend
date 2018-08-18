@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, forIn, filter } from 'lodash';
+import { get, keys, sum, size, values } from 'lodash';
 import * as utility from 'lib/utility/utility';
 
 export const getImageList = (url) =>
@@ -51,6 +51,17 @@ export const getImageHistory = ({url, id}) =>
           };
           return resp.data.map(transformObject);
         });
+
+export const imageCount = (url) =>
+      axios.get(`${url}/images/json?all=0`)
+          .then( resp => {
+              const { data } = resp;
+              const totalSize  = data.map( v => v.Size);
+              return {
+                  image: size(data),
+                  totalsize: utility.humanSize(sum(values(totalSize)))
+              }
+          })
 
 
 export const getImageInspectRaw = ({url, id}) => axios.get(`${url}/images/${id}/json`);
