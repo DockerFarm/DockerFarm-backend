@@ -26,7 +26,6 @@ export const getVolumeInfo = (url, id) =>
           }
     });
 
-export const getVolumeInspectRaw = (url, id) => axios.get(`${url}/volumes/${id}`);
 
 export const getVolumeRelateContainer = (url, id) =>
     axios.get(`${url}/containers/json?all=1&filters={"volume": ["${id}"]}`)
@@ -41,6 +40,8 @@ export const getVolumeRelateContainer = (url, id) =>
             };
             return resp.data.map(transformObject);
         });
+        
+export const getVolumeInspectRaw = (url, id) => axios.get(`${url}/volumes/${id}`);
 
 export const getVolumeDriver = (url) =>
     axios.get(`${url}/info`)
