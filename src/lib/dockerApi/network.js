@@ -45,7 +45,6 @@ export const getNetworkInfo = (url, id) =>
               }
           });
 
-
 export const disconnectNetwork = ({url, id, form}) => axios.post(`${url}/networks/${id}/disconnect`, {
     "Container": form.id,
     "Force": true

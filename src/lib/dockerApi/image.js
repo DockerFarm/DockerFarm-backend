@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { get, keys, sum, size, values } from 'lodash';
-import * as utility from 'lib/utility/utility';
+import { get, keys, size, reduce } from 'lodash';
+import * as utility from 'lib/utility';
 
 export const getImageList = (url) =>
     axios.get(`${url}/images/json`)
@@ -59,7 +59,10 @@ export const imageCount = (url) =>
               const totalSize  = data.map( v => v.Size);
               return {
                   image: size(data),
-                  totalsize: utility.humanSize(sum(values(totalSize)))
+                  totalsize: utility.humanSize(reduce(totalSize, (total, size) => {
+                      total = total + size;
+                      return total;
+                  }))
               }
           })
 
