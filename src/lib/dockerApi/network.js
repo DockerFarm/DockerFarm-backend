@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, size, reduce} from 'lodash';
+import { get, keys, size, reduce, sortBy} from 'lodash';
 
 export const getNetworkList = (url) =>
     axios.get(`${url}/networks`)
@@ -15,7 +15,7 @@ export const getNetworkList = (url) =>
                 gateway: get(v, 'IPAM.Config[0].Gateway','-'),
               }
           };
-          return resp.data.map(transformObject);
+          return sortBy(resp.data.map(transformObject), "id");
         });
 
 export const getNetworkInfo = (url, id) =>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, size, reduce, isBoolean } from 'lodash';
+import { get, keys, size, reduce, isBoolean, sortBy} from 'lodash';
 
 export const getVolumeList = (url) =>
     axios.get(`${url}/volumes`)
@@ -11,7 +11,7 @@ export const getVolumeList = (url) =>
                 mountpoint: get(v,'Mountpoint','-'),
               }
           };
-          return resp.data.Volumes.map(transformObject);
+          return sortBy(resp.data.Volumes.map(transformObject),'name');
         });
 export const getVolumeInfo = (url, id) =>
     axios.get(`${url}/volumes/${id}`)
