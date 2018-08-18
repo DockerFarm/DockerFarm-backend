@@ -42,7 +42,18 @@ export const getVolumeRelateContainer = (url, id) =>
             return resp.data.map(transformObject);
         });
 
+export const getVolumeDriver = (url) =>
+    axios.get(`${url}/info`)
+        .then( resp => {
+            const { data } = resp;
+
+            return {
+                Driver: get(data, 'Plugins.Volume', '' ),
+            }
+        });
+
 export const deleteVolume = (url, id) => axios.delete(`${url}/volumes/${id}`);
+
 export const createVolume = (url, form) => axios.post(`${url}/volumes/create`, {
     "Name" : form.name,
     "Driver" : form.driver,
