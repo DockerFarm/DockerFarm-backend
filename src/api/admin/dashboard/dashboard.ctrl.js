@@ -6,12 +6,22 @@ import * as VolumeApi from 'lib/dockerApi/volume';
 export const getDashboardInfo = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
         try {
-            const data = await DashboardApi.getEndpointInfo(url);
-            const imagecount = await ImageApi.imageCount(url);
-            const volumecount = await VolumeApi.volumeCount(url);
-            const networkcount = await NetworkApi.networkCount(url);
+            const { info, container } = await DashboardApi.getEndpointInfo(url);
+            const image = await ImageApi.getSummaryInfo(url);
+            const volume = await VolumeApi.getSummaryInfo(url);
+            const network = await NetworkApi.getSummaryInfo(url);
             ctx.status = 200;
-            ctx.body = { result: { data, imagecount, volumecount, networkcount }};
+            ctx.body = { 
+                result: { 
+                    info, 
+                    summary: {
+                        container,
+                        image,
+                        volume,
+                        network
+                    }
+                }
+            };
         } catch(e) {
             ctx.throw(e, 500);
         }
