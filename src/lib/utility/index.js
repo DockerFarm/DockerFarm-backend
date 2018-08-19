@@ -14,3 +14,9 @@ export const getDateFromTimeStamp = (timestamp) => {
 export const getDate = (date) => {
   return moment(date).format('YYYY-MM-DD');
 }
+
+
+export const numberWithCommas = x => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
