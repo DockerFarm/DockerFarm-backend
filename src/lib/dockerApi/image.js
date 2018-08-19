@@ -5,16 +5,16 @@ import * as utility from 'lib/utility';
 export const getImageList = (url) =>
     axios.get(`${url}/images/json`)
         .then(resp => {
-          const transformObject = v => {
-              return {
-                  id: get(v,'Id','').substring(7,19),
-                  tag: get(v, 'RepoTags[0]','-'),
-                  created: utility.getDateFromTimeStamp(get(v, 'Created', '')),
-                  size: utility.humanSize(get(v, 'Size', '')),
-              }
-          };
-          return resp.data.map(transformObject);
-        });
+            const transformObject = v => {
+                return {
+                    id: get(v,'Id','').substring(7,19),
+                    tag: get(v, 'RepoTags[0]','-'),
+                    created: utility.getDateFromTimeStamp(get(v, 'Created', '')),
+                    size: utility.humanSize(get(v, 'Size', '')),
+                }
+            };
+            return resp.data.map(transformObject);
+    });
 
 export const getImageInfo = ({url, id}) =>
     axios.get(`${url}/images/${id}/json`)
@@ -43,28 +43,28 @@ export const getImageInfo = ({url, id}) =>
 export const getImageHistory = ({url, id}) =>
     axios.get(`${url}/images/${id}/history`)
         .then( resp => {
-          const transformObject = v => {
-              return {
-                  layer: get(v,'CreatedBy',''),
-                  size: utility.humanSize(get(v, 'Size', '')),
-              }
-          };
-          return resp.data.map(transformObject);
-        });
+            const transformObject = v => {
+                return {
+                    layer: get(v,'CreatedBy',''),
+                    size: utility.humanSize(get(v, 'Size', '')),
+                }
+            };
+            return resp.data.map(transformObject);
+    });
 
-export const imageCount = (url) =>
+export const getSummaryInfo = (url) =>
       axios.get(`${url}/images/json?all=0`)
           .then( resp => {
-              const { data } = resp;
-              const totalSize  = data.map( v => v.Size);
-              return {
-                  image: size(data),
-                  totalsize: utility.humanSize(reduce(totalSize, (total, size) => {
-                      total = total + size;
-                      return total;
-                  }))
-              }
-          })
+            const { data } = resp;
+            const totalSize  = data.map( v => v.Size);
+            return {
+                count: size(data),
+                totalsize: utility.humanSize(reduce(totalSize, (total, size) => {
+                    total = total + size;
+                    return total;
+                }))
+            }
+        })
 
 
 export const getImageInspectRaw = ({url, id}) => axios.get(`${url}/images/${id}/json`);

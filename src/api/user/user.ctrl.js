@@ -4,12 +4,13 @@ import ping from 'lib/ping';
 export const me = async ctx => {
     const {
         email,
-        username
+        username,
+        endpoint
      } = ctx.state.user;
 
     ctx.body = {
         email,
-        username
+        username,
+        endpoint
     };
 }
-

@@ -64,11 +64,11 @@ export const createVolume = (url, form) => axios.post(`${url}/volumes/create`, {
     },{})
 });
 
-export const volumeCount = (url) =>
+export const getSummaryInfo = (url) =>
     axios.get(`${url}/volumes`)
         .then( resp => {
             const { data } = resp;
             return {
-              volume: size(data.Volumes)
+              count: size(data.Volumes)
             }
-          })
+        })

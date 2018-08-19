@@ -8,12 +8,16 @@ export const getEndpointInfo = (url) =>
             const { data } = resp;
 
             return {
-                nodename: get(data, 'Name', '' ),
-                nodecpu: get(data, 'NCPU', ''),
-                nodememoy: humanSize(get(data, 'MemTotal', '')),
-                dockerversion: get(data, 'ServerVersion', ''),
-                containers: get(data, 'Containers', ''),
-                runningcontainer: get(data, 'ContainersRunning', ''),
-                stoppedcontainer: get(data, 'ContainersStopped', '' )
+                info: {
+                    name: get(data, 'Name', '' ),
+                    cpu: get(data, 'NCPU', ''),
+                    memory: humanSize(get(data, 'MemTotal', '')),
+                    dockerversion: get(data, 'ServerVersion', ''),
+                },
+                container: {
+                    total: get(data, 'Containers', ''),
+                    running: get(data, 'ContainersRunning', ''),
+                    stop: get(data, 'ContainersStopped', '' )
+                }
             }
         });

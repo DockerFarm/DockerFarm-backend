@@ -73,11 +73,11 @@ export const createNetwork = (url, form) => axios.post(`${url}/networks/create`,
     },{})
 });
 
-export const networkCount = (url) =>
+export const getSummaryInfo = (url) =>
     axios.get(`${url}/networks`)
         .then( resp => {
             const { data } = resp;
             return {
-                network: size(data)
+                count: size(data)
             }
         });
