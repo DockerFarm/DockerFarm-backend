@@ -6,20 +6,34 @@ import * as VolumeApi from 'lib/dockerApi/volume';
 export const getDashboardInfo = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
         try {
-            const { info, container } = await DashboardApi.getEndpointInfo(url);
+            const { info, container, os, status, plugins } = await DashboardApi.getEndpointInfo(url);
+            const { docker, api, go, kernel,  ostype, arch } = await DashboardApi.getEngineVersion(url);
             const image = await ImageApi.getSummaryInfo(url);
             const volume = await VolumeApi.getSummaryInfo(url);
             const network = await NetworkApi.getSummaryInfo(url);
             ctx.status = 200;
-            ctx.body = { 
-                result: { 
-                    info, 
+            ctx.body = {
+                result: {
+                    info,
                     summary: {
                         container,
                         image,
                         volume,
                         network
+                    },
+                    engine: {
+                        version: {
+                            docker,
+                            api,
+                            go,
+                            ostype,
+                            os,
+                            arch,
+                        },
+                        status,
+                        plugins
                     }
+
                 }
             };
         } catch(e) {
