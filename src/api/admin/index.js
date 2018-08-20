@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import registry from './registry';
 import endpoint from './endpoint';
 import container from './container';
 import image from './image';
@@ -10,6 +11,7 @@ import library from './library';
 const router = new Router;
 
 router.use('/endpoint', endpoint.routes());
+router.use('/registry', registry.routes());
 router.use('/container', container.routes());
 router.use('/image', image.routes());
 router.use('/network', network.routes());
