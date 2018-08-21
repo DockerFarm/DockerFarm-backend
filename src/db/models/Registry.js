@@ -40,8 +40,15 @@ Registry.statics.addRegistry = function({
     return registry.save();
 }
 
-
 Registry.statics.selectRegistry = function({
+    id,
+    userId
+}) {
+    return this.findOne({_id: new ObjectId(id), userId}).exec();
+}
+
+
+Registry.statics.checkRegistry = function({
     url,
     name, 
     userId,

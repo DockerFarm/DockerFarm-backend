@@ -42,7 +42,7 @@ export const addRegistry = async ctx => {
     }
 
     try {
-        const result = await Registry.selectRegistry({ userId: id, url, name });
+        const result = await Registry.checkRegistry({ userId: id, url, name });
 
         if( result.length > 0 ){
             ctx.status = 409;
@@ -131,7 +131,7 @@ export const updateRegistry = async ctx => {
 
 
     try {
-        const result = await Registry.selectRegistry({ 
+        const result = await Registry.checkRegistry({ 
             userId: id,
             url,
             name
@@ -195,6 +195,20 @@ export const selectRegistries = async ctx => {
     } catch(e) {
         ctx.throw(e, 500);
     }
+}
+
+export const selectRegistry = async ctx => {
+    const { id } = ctx.state.user;
+    const registryId = ctx.params.id;
+    
+    try{
+        const data = await Registry.selectRegistry({userId : id, id: registryId});
+        ctx.status = 200;
+        ctx.body = { result: data };
+    } catch(e) {
+        ctx.throw(e, 500);
+    }
+    
 }
 
 export const removeRegistry = async ctx => {
