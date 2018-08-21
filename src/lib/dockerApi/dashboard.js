@@ -18,6 +18,34 @@ export const getEndpointInfo = (url) =>
                     total: get(data, 'Containers', ''),
                     running: get(data, 'ContainersRunning', ''),
                     stop: get(data, 'ContainersStopped', '' )
+                },
+                os:  get(data, 'OperatingSystem', ''),
+                status: {
+                    cpu: get(data, 'NCPU', ''),
+                    memory: humanSize(get(data, 'MemTotal', '')),
+                    rootdir: get(data, 'DockerRootDir', ''),
+                    storage: get(data, 'Driver', ''),
+                    logging: get(data, 'LoggingDriver', ''),
+                    cgroup: get(data, 'CgroupDriver', '')
+                },
+                plugins: {
+                    volume: get(data, 'Plugins.Volume', ''),
+                    network: get(data, 'Plugins.Network', ''),
                 }
+            }
+        });
+
+export const getEngineVersion = (url) =>
+    axios.get(`${url}/version`)
+        .then( resp => {
+            const { data } = resp;
+
+            return {
+                docker: get(data, 'Version', ''),
+                api: get(data, 'ApiVersion', ''),
+                go: get(data, 'GoVersion', ''),
+                kernel: get(data, 'KernelVersion', ''),
+                ostype: get(data, 'Os', ''),
+                arch: get(data, 'Arch', ''),
             }
         });
