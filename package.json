@@ -37,6 +37,9 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^1.0.0",
     "passport-jwt": "^4.0.0",
+    "socket.io": "^2.1.1",
+    "socket.io-cookie": "^0.0.1",
+    "tar-stream": "^1.6.1",
     "tcp-ping": "^0.1.1",
     "url-parse": "^1.4.3",
     "winston": "^3.0.0"
