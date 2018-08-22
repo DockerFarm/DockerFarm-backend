@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { reduce, concat } from 'lodash';
 
 /* Convert File Size for human-readable  */
 export const humanSize = (size) => {
@@ -20,3 +21,4 @@ export const numberWithCommas = x => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const objectToQueryString = obj => reduce(obj, (acc, v, k) => concat(acc, `${k}=${v}`),[]).join('&')
