@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { get, keys, isArray, filter, map } from 'lodash';
+import { get, keys, isArray, filter, map, reduce } from 'lodash';
 
 /**
- * Container Process List All  
- * @param {String} url 
+ * Container Process List All
+ * @param {String} url
  */
-export const getContainerList = 
-    (url) => 
+export const getContainerList =
+    (url) =>
         axios.get(`${url}/containers/json?all=true`)
             .then(resp => {
                 const transformObject = v => {
@@ -20,9 +20,9 @@ export const getContainerList =
                         command: get(v, 'Command', ''),
                         ip: get(network, `[${keys(network)[0]}].IPAddress`, ''),
                         port: get(v, 'Ports', []).map( v => (
-                            { 
-                                private: get(v, 'PrivatePort', ''), 
-                                public: get(v, 'PublicPort', ''), 
+                            {
+                                private: get(v, 'PrivatePort', ''),
+                                public: get(v, 'PublicPort', ''),
                                 type: get(v, 'Type', '')
                             }))
                     }
@@ -31,16 +31,16 @@ export const getContainerList =
             });
 
 /**
- * Container Inspect Raw Data 
+ * Container Inspect Raw Data
  * @param {String} url
- * @param {String} id 
+ * @param {String} id
  */
 export const getContainerInspectRaw = ({url, id}) => axios.get(`${url}/containers/${id}/json`);
 
 /**
- * Container Inspect Process Data 
+ * Container Inspect Process Data
  * @param {String} url
- * @param {String} id 
+ * @param {String} id
  */
 export const getContainerInfo = ({url, id}) =>
      axios.get(`${url}/containers/${id}/json`)
@@ -74,12 +74,70 @@ export const getContainerInfo = ({url, id}) =>
                     dest: get(v, 'Destination', ''),
                     mode: get(v, 'Mode')
                 }))
-                    
-                
+
+
             }
         });
 
-export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`); 
+export const createContainer = ({url, name, form}) =>
+    axios.post(`${url}/containers/create?name=${name}`, {
+        "Image": form.images,
+        "ENV": reduce(form.env, (acc, obj) => {
+            acc[obj.key] = obj.value;
+            return acc;
+        },[]),
+        "Cmd": [form.cmd],
+        "ExposedPorts": reduce(form.exposedports, (acc, obj) => {
+            acc[obj.key] = obj.value;
+            return acc;
+        },{}),
+        "HostConfig": {
+            "RestartPolicy": {
+                "Name": form.restartpolicy
+            },
+            "PortBinding": reduce(form.portbinding, (acc, obj) => {
+                acc[obj.key] = obj.value;
+            }, {}),
+            "PublishAllPorts": false,
+            "Binds": reduce(form.volume, (acc, obj) => {
+                acc[obj.key] = obj.value;
+                return acc;
+            },[]),
+            "NetworkMode": form.networkmode,
+            "Privileged": false,
+            "ExtraHosts": [],
+            "Devices": []
+        },
+        "NetworkingConfig": {
+            "EndpointsConfig":{
+                "bridge":{
+                    "IPAMConfig":{
+                        "IPv4Address": form.ipv4address,
+                        "IPv6Address": form.ipv6address
+                    }
+                }
+            }
+        },
+        "Labels": reduce(form.labels, (acc, obj) => {
+            acc[obj.key] = obj.value;
+            return acc;
+        },{}),
+        "Entrypoint": form.entrypoint,
+        "WorkingDir": form.workingdir,
+    	"User": form.user,
+    	"name": form.name,
+    	"Hostname": form.hostname,
+    	"Domainname": form.domainname,
+    	"OpenStdin":false,
+    	"Tty":false,
+    	"Volumes":reduce(form.volume, (acc, obj) => {
+            acc[obj.key] = {};
+            return acc;
+        },{}),
+        }
+    )
+
+export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`);
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);
 export const restartContainer = ({url, id}) => axios.post(`${url}/containers/${id}/restart`);
 export const killContainer = ({url, id}) => axios.post(`${url}/containers/${id}/kill`);

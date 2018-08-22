@@ -39,6 +39,19 @@ export const getContainerInspectRaw = async ctx => {
     }
 }
 
+export const createContainer = async ctx => {
+    const { endpoint: {url} } = ctx.state.user;
+    const { name } = ctx.request.query;
+    const form = ctx.request.body;
+    try {
+        const { data } = await ContainerApi.createContainer({url, name, form});
+        ctx.status = 200;
+        ctx.body = { result: data };
+    } catch(e) {
+        ctx.throw(e, 500);
+    }
+}
+
 
 export const commandToContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
