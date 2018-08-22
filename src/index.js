@@ -4,10 +4,13 @@ import db from 'db';
 import api from 'api';
 import config from 'config';
 import cors from '@koa/cors';
-import tokenCheck from 'lib/middleware/tokenCheck';
 import { passport } from 'config/passport';
+import socket from './socket';
 
 const app = new Koa();
+
+
+db.connect();
 
 //use koa cors middleware
 app.use(cors({
@@ -23,7 +26,7 @@ app.use(api.routes())
 
 
 
-db.connect().then( _ => {
 
-    app.listen(config.port);
-})
+const server = app.listen(config.port);
+
+socket(server);
