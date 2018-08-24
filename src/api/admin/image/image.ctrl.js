@@ -94,11 +94,23 @@ export const deleteImage = async ctx => {
     }
 }
 
+export const pruneImage = async ctx => {
+    const { endpoint: {url} } = ctx.state.user;
 
-export const pullImage = socket => 
+    try {
+        const { data } = await ImageApi.pruneImage(url);
+        ctx.status = 200;
+        ctx.body = { result: data };
+    } catch(e) {
+        ctx.throw(e, 500);
+    }
+}
+
+
+export const pullImage = socket =>
     (resp, fn) => {
         const { endpoint: { url }} = socket.user;
-        const queryString = objectToQueryString(JSON.parse(resp)); 
+        const queryString = objectToQueryString(JSON.parse(resp));
 
         let req = request({
             method: 'POST',
@@ -114,7 +126,7 @@ export const pullImage = socket =>
         })
     };
 
-export const buildImage = socket => 
+export const buildImage = socket =>
      async (resp, fn) => {
         const { endpoint: { url }} = socket.user;
 
@@ -158,7 +170,7 @@ export const buildImage = socket =>
                 req.on('error', _ => {
                     throw 'Error';
                 });
-                
+
                 req.on('data', function(data) {
                     socket.emit('progress', data.toString());
                 })
@@ -174,7 +186,7 @@ export const buildImage = socket =>
             }
 
         });
-        
+
 
         try {
             await removeTempFolder();
