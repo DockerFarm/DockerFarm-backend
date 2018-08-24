@@ -39,6 +39,17 @@ export const getContainerInspectRaw = async ctx => {
     }
 }
 
+export const pruneContainer = async ctx => {
+    const { endpoint: {url} } = ctx.state.user;
+
+    try {
+        const { data } = await ContainerApi.pruneContainer(url);
+        ctx.status = 200;
+        ctx.body = { result: data };
+    } catch(e) {
+        ctx.throw(e, 500);
+    }
+}
 
 export const commandToContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;

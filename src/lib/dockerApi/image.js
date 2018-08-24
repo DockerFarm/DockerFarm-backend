@@ -74,3 +74,5 @@ export const tagImage = ({url, id, repo, tag}) => axios.post(`${url}/images/${id
 export const pullImage = ({url, image, tag}) => axios.post(`${url}/images/create?fromImage=${image}&tag=${tag}`);
 
 export const deleteImage = ({url, id}) => axios.delete(`${url}/images/${id}`);
+
+export const pruneImage = (url) => axios.post(`${url}/images/prune?filters={"dangling": ["false"]}`);

@@ -2,11 +2,11 @@ import axios from 'axios';
 import { get, keys, isArray, filter, map } from 'lodash';
 
 /**
- * Container Process List All  
- * @param {String} url 
+ * Container Process List All
+ * @param {String} url
  */
-export const getContainerList = 
-    (url) => 
+export const getContainerList =
+    (url) =>
         axios.get(`${url}/containers/json?all=true`)
             .then(resp => {
                 const transformObject = v => {
@@ -20,9 +20,9 @@ export const getContainerList =
                         command: get(v, 'Command', ''),
                         ip: get(network, `[${keys(network)[0]}].IPAddress`, ''),
                         port: get(v, 'Ports', []).map( v => (
-                            { 
-                                private: get(v, 'PrivatePort', ''), 
-                                public: get(v, 'PublicPort', ''), 
+                            {
+                                private: get(v, 'PrivatePort', ''),
+                                public: get(v, 'PublicPort', ''),
                                 type: get(v, 'Type', '')
                             }))
                     }
@@ -31,16 +31,16 @@ export const getContainerList =
             });
 
 /**
- * Container Inspect Raw Data 
+ * Container Inspect Raw Data
  * @param {String} url
- * @param {String} id 
+ * @param {String} id
  */
 export const getContainerInspectRaw = ({url, id}) => axios.get(`${url}/containers/${id}/json`);
 
 /**
- * Container Inspect Process Data 
+ * Container Inspect Process Data
  * @param {String} url
- * @param {String} id 
+ * @param {String} id
  */
 export const getContainerInfo = ({url, id}) =>
      axios.get(`${url}/containers/${id}/json`)
@@ -74,12 +74,12 @@ export const getContainerInfo = ({url, id}) =>
                     dest: get(v, 'Destination', ''),
                     mode: get(v, 'Mode')
                 }))
-                    
-                
+
+
             }
         });
 
-export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`); 
+export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`);
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);
 export const restartContainer = ({url, id}) => axios.post(`${url}/containers/${id}/restart`);
 export const killContainer = ({url, id}) => axios.post(`${url}/containers/${id}/kill`);
@@ -87,3 +87,4 @@ export const pauseContainer = ({url, id}) => axios.post(`${url}/containers/${id}
 export const resumeContainer = ({url, id}) => axios.post(`${url}/containers/${id}/unpause`);
 export const updateContainer = ({url, id, form}) => axios.post(`${url}/containers/${id}/update`, form);
 export const removeContainer = ({url, id}) => axios.delete(`${url}/containers/${id}`);
+export const pruneContainer = (url) => axios.post(`${url}/containers/prune`);
