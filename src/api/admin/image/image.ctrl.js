@@ -106,6 +106,19 @@ export const pruneImage = async ctx => {
     }
 }
 
+export const searchImage = async ctx => {
+    const { endpoint: {url} } = ctx.state.user;
+    const { query } = ctx.request.query;
+
+    try { 
+        const { data } = await ImageApi.searchImage({url,query});
+        ctx.status = 200;
+        ctx.body = { result: data };
+    } catch(e) {
+        ctx.throw(e, 500);
+    }
+}
+
 
 export const pullImage = socket =>
     (resp, fn) => {
