@@ -66,6 +66,7 @@ export const getSummaryInfo = (url) =>
             }
         })
 
+export const searchImage = ({url,query}) => axios.get(`${url}/images/search?term=${query}`).catch(err => console.log(err));
 
 export const getImageInspectRaw = ({url, id}) => axios.get(`${url}/images/${id}/json`);
 

@@ -4,6 +4,7 @@ import * as imageCtrl from './image.ctrl';
 const router = new Router();
 
 router.get('/', imageCtrl.getImageList);
+router.get('/search', imageCtrl.searchImage);
 router.get('/:id', imageCtrl.getImageInfo);
 router.get('/:id/raw', imageCtrl.getImageInspectRaw);
 router.post('/prune', imageCtrl.pruneImage);
