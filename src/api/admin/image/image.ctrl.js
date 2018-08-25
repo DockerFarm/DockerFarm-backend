@@ -4,6 +4,7 @@ import mkdirp from 'mkdirp';
 import { objectToQueryString } from 'lib/utility';
 import fs from 'fs-extra';
 import tar from 'tar';
+import { includes, set } from 'lodash';
 
 const extractNameAndTag = (imageName, registry) => {
   /* imageName.image = post body value */
@@ -33,12 +34,21 @@ export const getImageList = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
     try {
         const data = await ImageApi.getImageList(url);
+        const image = await ImageApi.getUsedImageId(url);
+        data.map(v => {
+            if( includes(image.map(v => v.usedId), v.id) ) {
+                return set(v, 'used', 'used');
+            }
+            return set(v, 'used', 'unused');
+        }
+        );
         ctx.status = 200;
-        ctx.body = { result: data };
+        ctx.body = { result: data};
     } catch(e) {
         ctx.throw(e, 500);
     }
 }
+
 
 export const getImageInfo = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
@@ -110,7 +120,7 @@ export const searchImage = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const { query } = ctx.request.query;
 
-    try { 
+    try {
         const { data } = await ImageApi.searchImage({url,query});
         ctx.status = 200;
         ctx.body = { result: data };

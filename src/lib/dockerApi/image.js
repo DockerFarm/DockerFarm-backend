@@ -16,6 +16,17 @@ export const getImageList = (url) =>
             return resp.data.map(transformObject);
     });
 
+export const getUsedImageId = (url) =>
+    axios.get(`${url}/containers/json`)
+        .then(resp => {
+            const transformObject = v => {
+                return {
+                    usedId: get(v, 'ImageID', '-').substring(7,19)
+                }
+            };
+            return resp.data.map(transformObject);
+        })
+
 export const getImageInfo = ({url, id}) =>
     axios.get(`${url}/images/${id}/json`)
         .then( resp => {
