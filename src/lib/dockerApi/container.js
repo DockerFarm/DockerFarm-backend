@@ -82,28 +82,26 @@ export const getContainerInfo = ({url, id}) =>
 export const createContainer = ({url, name, form}) =>
     axios.post(`${url}/containers/create?name=${name}`, {
         "Image": form.images,
-        "ENV": reduce(form.env, (acc, obj) => {
-            acc[obj.key] = obj.value;
-            return acc;
-        },[]),
+        "ENV": form.env.map(v => `${v.name}=${v.value}`),
         "Cmd": [form.cmd],
-        "ExposedPorts": reduce(form.exposedports, (acc, obj) => {
-            acc[obj.key] = obj.value;
+        "ExposedPorts":reduce(form.port, (acc, obj) => {
+            acc[obj.containerPort] = {};
             return acc;
         },{}),
         "HostConfig": {
             "RestartPolicy": {
-                "Name": form.restartpolicy
+                "Name": form.restartPolicy
             },
-            "PortBinding": reduce(form.portbinding, (acc, obj) => {
-                acc[obj.key] = obj.value;
-            }, {}),
+            "PortBinding": reduce(form.port, (acc, obj) => {
+                acc[obj.containerPort] = [{"HostPort": obj.hostPort}];
+                return acc;
+            },{}),
             "PublishAllPorts": false,
             "Binds": reduce(form.volume, (acc, obj) => {
-                acc[obj.key] = obj.value;
+                acc[obj.volumeName] = obj.volumePath;
                 return acc;
             },[]),
-            "NetworkMode": form.networkmode,
+            "NetworkMode": form.networkMode,
             "Privileged": false,
             "ExtraHosts": [],
             "Devices": []
@@ -112,8 +110,8 @@ export const createContainer = ({url, name, form}) =>
             "EndpointsConfig":{
                 "bridge":{
                     "IPAMConfig":{
-                        "IPv4Address": form.ipv4address,
-                        "IPv6Address": form.ipv6address
+                        "IPv4Address": form.ipv4Address,
+                        "IPv6Address": form.ipv6Address
                     }
                 }
             }
@@ -122,16 +120,16 @@ export const createContainer = ({url, name, form}) =>
             acc[obj.key] = obj.value;
             return acc;
         },{}),
-        "Entrypoint": form.entrypoint,
-        "WorkingDir": form.workingdir,
+        "Entrypoint": form.entryPoint,
+        "WorkingDir": form.workingDir,
     	"User": form.user,
     	"name": form.name,
-    	"Hostname": form.hostname,
-    	"Domainname": form.domainname,
+    	"Hostname": form.hostName,
+    	"Domainname": form.domainName,
     	"OpenStdin":false,
     	"Tty":false,
     	"Volumes":reduce(form.volume, (acc, obj) => {
-            acc[obj.key] = {};
+            acc[obj.volumePath] = {};
             return acc;
         },{}),
         }

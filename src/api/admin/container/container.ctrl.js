@@ -1,9 +1,10 @@
 import * as ContainerApi from 'lib/dockerApi/container';
 import Joi from 'joi';
+import {reduce} from 'lodash';
 
 export const getContainerList = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
-    try { 
+    try {
         const data = await ContainerApi.getContainerList(url);
         ctx.status = 200;
         ctx.body = { result: data};
@@ -15,7 +16,7 @@ export const getContainerList = async ctx => {
 export const getContainerInfo = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const { id } = ctx.params;
-    
+
     try {
 
         const data = await ContainerApi.getContainerInfo({url, id});
@@ -29,7 +30,7 @@ export const getContainerInfo = async ctx => {
 export const getContainerInspectRaw = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const { id } = ctx.params;
-    
+
     try {
         const { data } = await ContainerApi.getContainerInspectRaw({url, id});
         ctx.status = 200;
@@ -43,6 +44,11 @@ export const createContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const { name } = ctx.request.query;
     const form = ctx.request.body;
+
+    console.log(reduce(form.port, (acc, obj) => {
+        acc[obj.containerPort] = [{"HostPort": obj.hostPort}];
+        return acc;
+    },{}));
     try {
         const { data } = await ContainerApi.createContainer({url, name, form});
         ctx.status = 200;
@@ -57,7 +63,7 @@ export const commandToContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const { id, command } = ctx.params;
     const { form } = ctx.request.body;
-    
+
     const commandMap = {
         'start': ContainerApi.startContainer,
         'restart': ContainerApi.restartContainer,
@@ -79,7 +85,7 @@ export const commandToContainer = async ctx => {
                 'resume',
                 'kill',
                 'remove',
-                'update' 
+                'update'
             ).required(),
         });
 
@@ -87,7 +93,7 @@ export const commandToContainer = async ctx => {
 
         if( validateResult.error != null ) {
             ctx.status = 422;
-            ctx.body = { 
+            ctx.body = {
                 type : "ValidateError",
                 message : `invalid command ${command}`
             };
