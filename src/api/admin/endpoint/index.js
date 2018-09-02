@@ -5,6 +5,7 @@ const router = new Router();
 
 router.get('/', endpointCtrl.selectEndpoints);
 router.post('/', endpointCtrl.addEndpoint);
+router.post('/:id/active', endpointCtrl.activeEndpoint);
 router.put('/:id', endpointCtrl.updateEndpoint);
 router.delete('/:id', endpointCtrl.removeEndpoint);
 
