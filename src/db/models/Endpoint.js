@@ -94,4 +94,9 @@ EndPoint.statics.unActiveAll = function({
     return this.update({userId: new ObjectId(userId)}, {isActive: false}, {multi: true}).exec();
 }
 
+EndPoint.statics.activeEndpoint = function({
+    id
+}) {
+    return this.update({ _id: new ObjectId(id)}, { isActive: true }).exec();
+}
 export default mongoose.model('EndPoint', EndPoint);

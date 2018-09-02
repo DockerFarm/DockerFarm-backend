@@ -35,6 +35,7 @@ export const addEndpoint = async ctx => {
                 type: 'DuplicateError',
                 message: 'url or name already exists!'
             }
+            return;
         }
     }catch(e){
         ctx.throw(e, 500);
@@ -72,6 +73,19 @@ export const addEndpoint = async ctx => {
     } catch(e) {
         ctx.throw(e, 500);
     }
+}
+
+export const activeEndpoint = async ctx => {
+    const { id } = ctx.state.user;
+    const endpointId = ctx.params.id;
+
+    try {
+        await Endpoint.unActiveAll({ userId: id});
+        Endpoint.activeEndpoint({ id: endpointId });
+        ctx.status = 200;
+    } catch(e) {
+        ctx.throw(e, 500);
+    } 
 }
 
 export const updateEndpoint = async ctx => {
