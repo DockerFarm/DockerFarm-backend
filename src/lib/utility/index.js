@@ -16,6 +16,9 @@ export const getDate = (date) => {
   return moment(date).format('YYYY-MM-DD');
 }
 
+export const getUnixTimeStamp = (timestamp) => {
+    return Math.floor(new Date(timestamp).getTime()/1000);
+}
 
 export const numberWithCommas = x => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
