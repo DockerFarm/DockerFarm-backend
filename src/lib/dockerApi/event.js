@@ -2,7 +2,8 @@ import axios from 'axios';
 import { objectToQueryString, getDateFromTimeStamp } from 'lib/utility';
 import { split, get } from 'lodash'
 
-export const getEvents = (url, sinceTime, untilTime, params) => axios.get(`${url}/events?since=${sinceTime}&until=${untilTime}${objectToQueryString(params)}`)
+export const getEvents = (url, params) => axios.get(`${url}/events?${objectToQueryString(params)}
+`)
     .then(resp => {
         const events  = resp.data.split("\n");
         events.pop();
@@ -13,7 +14,7 @@ export const getEvents = (url, sinceTime, untilTime, params) => axios.get(`${url
                 id: get(data, 'Actor.ID', '').substring(0,12),
                 name: get(data, 'Actor.Attributes.name', ''),
                 action: get(data, 'Action', ''),
-                created: utility.getDateFromTimeStamp(get(data, 'time', ''))
+                created: getDateFromTimeStamp(get(data, 'time', ''))
             }
         }
         return events.map(transformObject);
