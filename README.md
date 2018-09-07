@@ -1,26 +1,39 @@
-# DockerFarm-backend
+# DockerFarm-frontend
 
-![Build Status](http://jenkins.dockerfarm.cf/buildStatus/icon?job=DockerFarm-backend/master&raw=true)
+![Build Status](http://jenkins.dockerfarm.cf/buildStatus/icon?job=DockerFarm-backend/master)
 
-![image](https://user-images.githubusercontent.com/2585676/40734484-8f5f291c-6473-11e8-8e9e-58add225b45b.png)
+![image](https://user-images.githubusercontent.com/2585676/45164345-3824ac00-b22d-11e8-8582-f401e7b9dca8.png)
 
-DockerFarm is a awesome docker management tool!
-
-This Project deals with the DockerFarm back-end area.
-
-## ✨ Features to be implemented
-
-* EndPoint Management
-* Registry Management
-* Container Management
-* Image Management
-* Volumne Management
-* Network Management
-* Event Log
-* DashBoard
+> DockerFarm is a system that can easily manage a Docker.
 
 
-## Getting Started
+
+## ✨ Feature
+
+- [x] DashBoard
+- [x] EndPoint Management
+- [x] Registry Management
+- [x] Container Management
+- [x] Image Management
+- [x] Volumne Management
+- [x] Network Management
+- [ ] Swarm Management
+- [ ] Event Log
+
+## Built With
+
+* koa
+* passport
+* socket.io
+* axios
+* joi
+* mongoose
+
+## Versioning
+We use SemVer for versioning. For the versions available, see the tags on this repository.
+
+
+## Development Setup
 
 1. First, Install [yarn](https://yarnpkg.com/en/) global 
 
@@ -45,9 +58,21 @@ development - dev.env
 production - production.env
 
 ```sh
-JWT_SECRET=[]
-SHA256_SECRET=[]
-MONGO_URL=[]
-PORT=[]
+JWT_SECRET=
+SHA256_SECRET=
+MONGO_URL=
+FRONT_URL=
+PORT=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=
+
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GITHUB_CALLBACK_URL=
 ```
 
+## License 
+
+This project is licensed under the MIT License
