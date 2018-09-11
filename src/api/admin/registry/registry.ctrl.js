@@ -1,4 +1,5 @@
 import Registry from 'db/models/Registry';
+import * as RegistryApi from 'lib/dockerApi/registry';
 import Joi from 'joi';
 import ping from 'lib/ping';
 import parse from 'url-parse';
@@ -234,6 +235,20 @@ export const removeRegistry = async ctx => {
         const result = await Registry.removeRegistry({ _id: id});
 
         ctx.status = 200;
+    } catch(e) {
+        ctx.throw(e, 500);
+    }
+}
+
+export const getSelectRegistryImage = async ctx => {
+    const { registry } = ctx.params;
+    const http = "http://";
+
+    try {
+        const url = http.concat(registry);
+        const data  = await RegistryApi.getSelectRegistryImage(url);
+        ctx.status = 200;
+        ctx.body = { result: data };
     } catch(e) {
         ctx.throw(e, 500);
     }
