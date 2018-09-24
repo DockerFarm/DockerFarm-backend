@@ -79,61 +79,61 @@ export const getContainerInfo = ({url, id}) =>
             }
         });
 
-        export const createContainer = ({url, name, form}) =>
-            axios.post(`${url}/containers/create?name=${name}`, {
-                "Image": form.images,
-                "ENV": form.env.map(v => `${v.name}=${v.value}`),
-                "Cmd": [form.cmd],
-                "ExposedPorts":reduce(form.port, (acc, obj) => {
-                    acc[obj.containerPort] = {};
-                    return acc;
-                },{}),
-                "HostConfig": {
-                    "RestartPolicy": {
-                        "Name": form.restartPolicy
-                    },
-                    "PortBinding": reduce(form.port, (acc, obj) => {
-                        acc[obj.containerPort] = [{"HostPort": obj.hostPort}];
-                        return acc;
-                    },{}),
-                    "PublishAllPorts": false,
-                    "Binds": reduce(form.volume, (acc, obj) => {
-                        acc[obj.volumeName] = obj.volumePath;
-                        return acc;
-                    },[]),
-                    "NetworkMode": form.networkMode,
-                    "Privileged": false,
-                    "ExtraHosts": [],
-                    "Devices": []
-                },
-                "NetworkingConfig": {
-                    "EndpointsConfig":{
-                        "bridge":{
-                            "IPAMConfig":{
-                                "IPv4Address": form.ipv4Address,
-                                "IPv6Address": form.ipv6Address
-                            }
-                        }
+export const createContainer = ({url, form}) =>
+    axios.post(`${url}/containers/create?name=${form.name}`, {
+        "Image": form.image,
+        "ENV": map(form.env, v => `${v.key}=${v.value}`),
+        "Cmd": [form.command],
+        "ExposedPorts":reduce(form.port, (acc, obj) => {
+            acc[obj.container] = {};
+            return acc;
+        },{}),
+        "HostConfig": {
+            "RestartPolicy": {
+                "Name": form.restartPolicy
+            },
+            "PortBinding": reduce(form.port, (acc, obj) => {
+                acc[obj.container] = [{"HostPort": obj.host}];
+                return acc;
+            },{}),
+            "PublishAllPorts": form.publishAllPorts,
+            "Binds": reduce(form.volume, (acc, obj) => {
+                acc[obj.name] = obj.path;
+                return acc;
+            },[]),
+            "NetworkMode": form.networkMode,
+            "Privileged": form.privileged,
+            "ExtraHosts": [],
+            "Devices": []
+        },
+        "NetworkingConfig": {
+            "EndpointsConfig":{
+                "bridge":{
+                    "IPAMConfig":{
+                        "IPv4Address": form.ipv4Address,
+                        "IPv6Address": form.ipv6Address
                     }
-                },
-                "Labels": reduce(form.labels, (acc, obj) => {
-                    acc[obj.key] = obj.value;
-                    return acc;
-                },{}),
-                "Entrypoint": form.entryPoint,
-                "WorkingDir": form.workingDir,
-            	"User": form.user,
-            	"name": form.name,
-            	"Hostname": form.hostName,
-            	"Domainname": form.domainName,
-            	"OpenStdin":false,
-            	"Tty":false,
-            	"Volumes":reduce(form.volume, (acc, obj) => {
-                    acc[obj.volumePath] = {};
-                    return acc;
-                },{}),
                 }
-            )
+            }
+        },
+        "Labels": reduce(form.labels, (acc, obj) => {
+            acc[obj.key] = obj.value;
+            return acc;
+        },{}),
+        "Entrypoint": form.entryPoint,
+        "WorkingDir": form.workingDir,
+        "User": form.user,
+        "name": form.name,
+        "Hostname": form.hostName,
+        "Domainname": form.domainName,
+        "OpenStdin":false,
+        "Tty":false,
+        "Volumes":reduce(form.volume, (acc, obj) => {
+            acc[obj.path] = {};
+            return acc;
+        },{}),
+        }
+    ).catch(err => console.log(err));
 
 export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`);
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);
