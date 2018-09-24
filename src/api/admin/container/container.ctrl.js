@@ -53,11 +53,10 @@ export const pruneContainer = async ctx => {
 
 export const createContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
-    const { name } = ctx.request.query;
     const form = ctx.request.body;
 
     try {
-        const { data } = await ContainerApi.createContainer({url, name, form});
+        const { data } = await ContainerApi.createContainer({url, form});
         ctx.status = 200;
         ctx.body = { result: data };
     } catch(e) {
@@ -111,6 +110,7 @@ export const commandToContainer = async ctx => {
         ctx.status = 200;
         ctx.body = { result: data};
     } catch(e) {
+        console.log(e);
         ctx.throw(e, 500);
     }
 }
