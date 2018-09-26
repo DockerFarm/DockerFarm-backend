@@ -1,4 +1,5 @@
 import * as ContainerApi from 'lib/dockerApi/container';
+import { preparePortbinding, prepareExposePorts } from 'lib/utility';
 import Joi from 'joi';
 
 export const getContainerList = async ctx => {
@@ -54,12 +55,14 @@ export const pruneContainer = async ctx => {
 export const createContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const form = ctx.request.body;
+    const { bindings, exposed } = preparePortbinding(form);
 
     try {
-        const { data } = await ContainerApi.createContainer({url, form});
+        const { data } = await ContainerApi.createContainer({url, form}, bindings, exposed);
         ctx.status = 200;
         ctx.body = { result: data };
     } catch(e) {
+        console.log(e)
         ctx.throw(e, 500);
     }
 }

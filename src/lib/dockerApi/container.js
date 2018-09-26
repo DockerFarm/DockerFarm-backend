@@ -79,23 +79,17 @@ export const getContainerInfo = ({url, id}) =>
             }
         });
 
-export const createContainer = ({url, form}) =>
+export const createContainer = ({url, form}, bindings, exposed) =>
     axios.post(`${url}/containers/create?name=${form.name}`, {
         "Image": form.image,
         "ENV": map(form.env, v => `${v.key}=${v.value}`),
-        "Cmd": [form.command],
-        "ExposedPorts":reduce(form.port, (acc, obj) => {
-            acc[obj.container] = {};
-            return acc;
-        },{}),
+        "Cmd": get(form, 'command',[]),
+        "ExposedPorts": exposed,
         "HostConfig": {
             "RestartPolicy": {
                 "Name": form.restartPolicy
             },
-            "PortBinding": reduce(form.port, (acc, obj) => {
-                acc[obj.container] = [{"HostPort": obj.host}];
-                return acc;
-            },{}),
+            "PortBindings": bindings,
             "PublishAllPorts": form.publishAllPorts,
             "Binds": reduce(form.volume, (acc, obj) => {
                 acc[obj.name] = obj.path;
