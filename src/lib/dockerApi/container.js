@@ -138,7 +138,6 @@ export const createContainer = ({url, form}, bindings, exposed) =>
         },{}),
         }
     ).catch(err => console.log(err));
-export const createRunContainer = ({url, form}) => axios.post(`${url}/containers/${form.name}/start`);
 
 export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`);
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);

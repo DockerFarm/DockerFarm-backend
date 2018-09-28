@@ -59,7 +59,10 @@ export const createContainer = async ctx => {
 
     try {
         const { data } = await ContainerApi.createContainer({url, form}, bindings, exposed);
-        await ContainerApi.createRunContainer({url, form});
+        if (form.deployAfterStart) {
+            const id = form.name;
+            await ContainerApi.startContainer({url, id});
+        }
         ctx.status = 200;
         ctx.body = { result: data };
     } catch(e) {
