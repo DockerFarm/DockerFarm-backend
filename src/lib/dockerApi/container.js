@@ -91,10 +91,20 @@ export const createContainer = ({url, form}, bindings, exposed) =>
             },
             "PortBindings": bindings,
             "PublishAllPorts": form.publishAllPorts,
-            "Binds": reduce(form.volume, (acc, obj) => {
-                acc[obj.name] = obj.path;
-                return acc;
-            },[]),
+            "Binds": map(form.volume, v => {
+                if ( v.rw == false && v.opt == "volume" ) {
+                    return v.name + ":" + v.containerPath + ":ro"
+                }
+                if ( v.rw == false && v.opt == "bind" ) {
+                    return v.hostPath + ":" + v.containerPath + ":ro"
+                }
+                if ( v.rw == true && v.opt == "volume" ) {
+                    return v.name + ":" + v.containerPath
+                }
+                if (v.rw == true && v.opt == "bind") {
+                    return v.hostPath + ":" + v.containerPath
+                }
+            }, []),
             "NetworkMode": form.networkMode,
             "Privileged": form.privileged,
             "ExtraHosts": [],
@@ -123,7 +133,7 @@ export const createContainer = ({url, form}, bindings, exposed) =>
         "OpenStdin":false,
         "Tty":false,
         "Volumes":reduce(form.volume, (acc, obj) => {
-            acc[obj.path] = {};
+            acc[obj.containerPath] = {};
             return acc;
         },{}),
         }
