@@ -9,3 +9,5 @@ jspm_packages
 **/*.env
 
 dist
+
+**/*.swp
