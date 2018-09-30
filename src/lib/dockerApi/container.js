@@ -1,4 +1,6 @@
 import axios from 'axios';
+import qs from 'query-string'
+import request from 'request';
 import { get, keys, isArray, filter, map, reduce } from 'lodash';
 
 /**
@@ -134,6 +136,22 @@ export const createContainer = ({url, form}) =>
         },{}),
         }
     ).catch(err => console.log(err));
+
+export const getContainerLog = ({url, id, query}) => new Promise((resolve, reject) => {
+	const req = request({
+		method: 'GET',
+		uri: `${url}/containers/${id}/logs?${qs.stringify(query)}`
+	});
+
+	let result = '';
+	req.on('data', data => {
+		result += data;
+	});
+
+	req.on('end', _ => {
+		resolve(result);		
+	});
+});
 
 export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`);
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);
