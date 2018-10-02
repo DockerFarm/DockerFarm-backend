@@ -79,7 +79,7 @@ export const getContainerInfo = ({url, id}) =>
             }
         });
 
-export const createContainer = ({url, form}, bindings, exposed) =>
+export const createContainer = ({url, form}) =>
     axios.post(`${url}/containers/create?name=${form.name}`, {
         "Image": form.image,
         "ENV": map(form.env, v => `${v.key}=${v.value}`),
