@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, isArray, filter, map, reduce } from 'lodash';
+import { get, keys, isArray, filter, map, reduce} from 'lodash';
 
 /**
  * Container Process List All
@@ -84,12 +84,12 @@ export const createContainer = ({url, form}, bindings, exposed) =>
         "Image": form.image,
         "ENV": map(form.env, v => `${v.key}=${v.value}`),
         "Cmd": get(form, 'command',[]),
-        "ExposedPorts": exposed,
+        "ExposedPorts": form.exposed,
         "HostConfig": {
             "RestartPolicy": {
                 "Name": form.restartPolicy
             },
-            "PortBindings": bindings,
+            "PortBindings": form.bindings,
             "PublishAllPorts": form.publishAllPorts,
             "Binds": map(form.volume, v => {
                 if ( v.rw == false && v.opt == "volume" ) {
@@ -107,8 +107,14 @@ export const createContainer = ({url, form}, bindings, exposed) =>
             }, []),
             "NetworkMode": form.networkMode,
             "Privileged": form.privileged,
-            "ExtraHosts": [],
-            "Devices": []
+            "ExtraHosts": [form.extrahosts],
+            "Devices": map(form.device, v => {
+                const value = {};
+                value.PathOnHost = v.host;
+                value.PathInContainer = v.container;
+                value.CgroupPermissions = 'rwm';
+                return value;
+            },[])
         },
         "NetworkingConfig": {
             "EndpointsConfig":{
@@ -121,7 +127,7 @@ export const createContainer = ({url, form}, bindings, exposed) =>
             }
         },
         "Labels": reduce(form.labels, (acc, obj) => {
-            acc[obj.key] = obj.value;
+            acc[obj.name] = obj.value;
             return acc;
         },{}),
         "Entrypoint": form.entryPoint,

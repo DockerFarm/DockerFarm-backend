@@ -21,24 +21,3 @@ export const numberWithCommas = x => {
 }
 
 export const objectToQueryString = obj => reduce(obj, (acc, v, k) => concat(acc, `${k}=${v}`),[]).join('&')
-
-export const preparePortbinding = (config) => {
-    const bindings = {};
-    const exposed = {};
-    config.ports.forEach( port => {
-        if(port.container) {
-            const key = port.container + '/' + port.protocol;
-            const binding = {};
-            if (port.host && port.host.indexOf(':') > -1) {
-                const hostAndPort = port.host.split(':');
-                binding.HostIp = hostAndPort[0];
-                binding.HostPort = hostAndPort[1];
-            } else {
-                binding.HostPort = port.host;
-            }
-            bindings[key] = [binding];
-            exposed[key] = {};
-        }
-    });
-    return { bindings, exposed };
-}
