@@ -5,6 +5,7 @@ import { humanSize } from 'lib/utility';
 import { request } from 'lib/httpClient';
 import { get, keys, isArray, filter, map, reduce } from 'lodash';
 
+
 /**
  * Container Process List All
  * @param {String} url
@@ -87,28 +88,38 @@ export const createContainer = ({url, form}) =>
     axios.post(`${url}/containers/create?name=${form.name}`, {
         "Image": form.image,
         "ENV": map(form.env, v => `${v.key}=${v.value}`),
-        "Cmd": [form.command],
-        "ExposedPorts":reduce(form.port, (acc, obj) => {
-            acc[obj.container] = {};
-            return acc;
-        },{}),
+        "Cmd": get(form, 'command',[]),
+        "ExposedPorts": form.exposed,
         "HostConfig": {
             "RestartPolicy": {
                 "Name": form.restartPolicy
             },
-            "PortBinding": reduce(form.port, (acc, obj) => {
-                acc[obj.container] = [{"HostPort": obj.host}];
-                return acc;
-            },{}),
+            "PortBindings": form.bindings,
             "PublishAllPorts": form.publishAllPorts,
-            "Binds": reduce(form.volume, (acc, obj) => {
-                acc[obj.name] = obj.path;
-                return acc;
-            },[]),
+            "Binds": map(form.volume, v => {
+                if ( v.rw == false && v.opt == "volume" ) {
+                    return v.name + ":" + v.containerPath + ":ro"
+                }
+                if ( v.rw == false && v.opt == "bind" ) {
+                    return v.hostPath + ":" + v.containerPath + ":ro"
+                }
+                if ( v.rw == true && v.opt == "volume" ) {
+                    return v.name + ":" + v.containerPath
+                }
+                if (v.rw == true && v.opt == "bind") {
+                    return v.hostPath + ":" + v.containerPath
+                }
+            }, []),
             "NetworkMode": form.networkMode,
             "Privileged": form.privileged,
-            "ExtraHosts": [],
-            "Devices": []
+            "ExtraHosts": [form.extrahosts],
+            "Devices": map(form.device, v => {
+                const value = {};
+                value.PathOnHost = v.host;
+                value.PathInContainer = v.container;
+                value.CgroupPermissions = 'rwm';
+                return value;
+            },[])
         },
         "NetworkingConfig": {
             "EndpointsConfig":{
@@ -121,7 +132,7 @@ export const createContainer = ({url, form}) =>
             }
         },
         "Labels": reduce(form.labels, (acc, obj) => {
-            acc[obj.key] = obj.value;
+            acc[obj.name] = obj.value;
             return acc;
         },{}),
         "Entrypoint": form.entryPoint,
@@ -133,7 +144,7 @@ export const createContainer = ({url, form}) =>
         "OpenStdin":false,
         "Tty":false,
         "Volumes":reduce(form.volume, (acc, obj) => {
-            acc[obj.path] = {};
+            acc[obj.containerPath] = {};
             return acc;
         },{}),
         }

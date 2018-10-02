@@ -1,5 +1,27 @@
 import * as ContainerApi from 'lib/dockerApi/container';
 import Joi from 'joi';
+import { assign } from 'lodash';
+
+const preparePortbinding = (config) => {
+    const bindings = {};
+    const exposed = {};
+    config.ports.forEach( port => {
+        if(port.container) {
+            const key = port.container + '/' + port.protocol;
+            const binding = {};
+            if (port.host && port.host.indexOf(':') > -1) {
+                const hostAndPort = port.host.split(':');
+                binding.HostIp = hostAndPort[0];
+                binding.HostPort = hostAndPort[1];
+            } else {
+                binding.HostPort = port.host;
+            }
+            bindings[key] = [binding];
+            exposed[key] = {};
+        }
+    });
+    return { bindings, exposed };
+}
 
 export const getContainerList = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
@@ -106,12 +128,18 @@ export const pruneContainer = async ctx => {
 export const createContainer = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const form = ctx.request.body;
+    assign(form, preparePortbinding(form));
 
     try {
         const { data } = await ContainerApi.createContainer({url, form});
+        if (form.deployAfterStart) {
+            const id = form.name;
+            await ContainerApi.startContainer({url, id});
+        }
         ctx.status = 200;
         ctx.body = { result: data };
     } catch(e) {
+        console.log(e)
         ctx.throw(e, 500);
     }
 }
