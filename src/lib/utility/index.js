@@ -4,7 +4,7 @@ import { reduce, concat } from 'lodash';
 /* Convert File Size for human-readable  */
 export const humanSize = (size) => {
   const num = size == 0 ? 0 : Math.floor( Math.log(size) / Math.log(1024));
-  return ( size / Math.pow(1024, num) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][num];
+  return ( size / Math.pow(1024, num) ).toFixed(2) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][num];
 }
 
 /* Convert UNIX Time Stamp to ISO DATE and Date Format */

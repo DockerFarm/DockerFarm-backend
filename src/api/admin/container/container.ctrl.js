@@ -34,6 +34,58 @@ export const getContainerList = async ctx => {
     }
 }
 
+export const getContainerLog = async ctx => {
+    const { endpoint: { url } } = ctx.state.user;
+    const { id } = ctx.params;
+
+	try { 
+		const data = await ContainerApi.getContainerLog({
+			url, 
+			id, 
+			query: ctx.request.query
+		});
+
+        ctx.status = 200;
+        ctx.body = { result: data };
+	} catch(e) {
+        ctx.throw(e, 500);
+	}
+}
+
+export const getContainerStat = async ctx => {
+    const { endpoint: { url } } = ctx.state.user;
+    const { id } = ctx.params;
+
+	try { 
+		const data = await ContainerApi.getContainerStat({
+			url, 
+			id
+		});
+
+        ctx.status = 200;
+        ctx.body = { result: data };
+	} catch(e) {
+        ctx.throw(e, 500);
+	}
+}
+
+export const getProcessInsideContainer = async ctx => {
+    const { endpoint: { url } } = ctx.state.user;
+    const { id } = ctx.params;
+
+	try { 
+		const { data } = await ContainerApi.getProcessInsideContainer({
+			url, 
+			id
+		});
+
+        ctx.status = 200;
+        ctx.body = { result: data };
+	} catch(e) {
+        ctx.throw(e, 500);
+	}
+}
+
 export const getContainerInfo = async ctx => {
     const { endpoint: {url} } = ctx.state.user;
     const { id } = ctx.params;

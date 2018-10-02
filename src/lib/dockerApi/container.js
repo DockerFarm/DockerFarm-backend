@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { get, keys, isArray, filter, map, reduce} from 'lodash';
+import qs from 'query-string'
+import moment from 'moment';
+import { humanSize } from 'lib/utility';
+import { request } from 'lib/httpClient';
+import { get, keys, isArray, filter, map, reduce } from 'lodash';
+
 
 /**
  * Container Process List All
@@ -145,6 +150,39 @@ export const createContainer = ({url, form}) =>
         }
     ).catch(err => console.log(err));
 
+export const getContainerLog = ({url, id, query}) => 
+	request({
+		method: 'GET',
+		url: `${url}/containers/${id}/logs?${qs.stringify(query)}`
+	})	
+	
+export const getContainerStat = async ({url, id}) => {
+	const { data } = await axios.get(`${url}/containers/${id}/stats?stream=0`);
+
+	const networks = get(data, 'networks', {});
+	const device = networks[keys(networks)[0]];
+
+	const calculateCPUPercent = (totalUse, preTotalUse, systemUse, preSystemUse) =>
+		(totalUse - preTotalUse) / (systemUse - preSystemUse) * 100;
+
+	const usage = get(data, 'cpu_stats.cpu_usage.total_usage', 0);
+	const preUsage = get(data, 'precpu_stats.cpu_usage.total_usage',0);
+	const systemUsage = get(data, 'cpu_stats.system_cpu_usage',0);
+	const preSystemUsage = get(data, 'precpu_stats.system_cpu_usage',0);
+
+	const timestamp = get(data, 'read', '');
+	return {
+		memoryUsage: get(data, 'memory_stats.usage', 0),
+		cpuUsage: parseFloat(calculateCPUPercent(usage, preUsage, systemUsage, preSystemUsage).toFixed(2)),
+		network: {
+			rx: get(device, 'rx_bytes', 0),
+			tx: get(device, 'tx_bytes', 0)
+		},
+		time: timestamp.substr(timestamp.indexOf('T') + 1, 8) 
+	}
+}
+
+export const getProcessInsideContainer = ({url, id}) => axios.get(`${url}/containers/${id}/top`);
 export const startContainer = ({url, id}) => axios.post(`${url}/containers/${id}/start`);
 export const stopContainer = ({url, id}) => axios.post(`${url}/containers/${id}/stop`);
 export const restartContainer = ({url, id}) => axios.post(`${url}/containers/${id}/restart`);
