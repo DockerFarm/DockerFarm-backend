@@ -8,6 +8,7 @@ import volume from './volume';
 import dashboard from './dashboard';
 import library from './library';
 import event from './event';
+import swarm from './swarm';
 
 const router = new Router;
 
@@ -20,5 +21,6 @@ router.use('/volume', volume.routes());
 router.use('/dashboard', dashboard.routes());
 router.use('/library', library.routes());
 router.use('/event', event.routes());
+router.use('/swarm', swarm.routes());
 
 export default router;
