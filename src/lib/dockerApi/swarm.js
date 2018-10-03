@@ -26,3 +26,15 @@ export const getSwarmToken = (url) =>
                     managerToken: get(data, 'JoinTokens.Manager', ''),
                 }
           });
+
+export const swarmJoin = ({url, form}) =>
+    axios.post(`${url}/swarm/join`, {
+        "ListenAddr": form.listenAddr,
+        "AdvertiseAddr": form.advertiseAddr,
+        "RemoteAddrs": [form.remoteAddr],
+        "JoinToken": form.token
+	   }).catch(err => console.log(err));
+
+export const getSwarmInspectRaw = (url) => axios.get(`${url}/swarm`);
+
+export const swarmLeave = (url) => axios.post(`${url}/swarm/leave?force=true`);
