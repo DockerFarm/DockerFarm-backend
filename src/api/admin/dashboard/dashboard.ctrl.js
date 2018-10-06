@@ -1,4 +1,4 @@
-import * as DashboardApi from 'lib/dockerApi/dashboard';
+import * as SystemApi from 'lib/dockerApi/system';
 import * as ImageApi from 'lib/dockerApi/image';
 import * as NetworkApi from 'lib/dockerApi/network';
 import * as VolumeApi from 'lib/dockerApi/volume';
@@ -6,8 +6,8 @@ import * as VolumeApi from 'lib/dockerApi/volume';
 export const getDashboardInfo = async ctx => {
     const { endpoint: { url } } = ctx.state.user;
         try {
-            const { info, container, os, status, plugins } = await DashboardApi.getEndpointInfo(url);
-            const { docker, api, go, kernel,  ostype, arch } = await DashboardApi.getEngineVersion(url);
+            const { info, container, os, status, plugins } = await SystemApi.getEndpointInfo(url);
+            const { docker, api, go, kernel,  ostype, arch } = await SystemApi.getEngineVersion(url);
             const image = await ImageApi.getSummaryInfo(url);
             const volume = await VolumeApi.getSummaryInfo(url);
             const network = await NetworkApi.getSummaryInfo(url);
