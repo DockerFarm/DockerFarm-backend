@@ -31,7 +31,15 @@ export const getEndpointInfo = (url) =>
                 plugins: {
                     volume: get(data, 'Plugins.Volume', ''),
                     network: get(data, 'Plugins.Network', ''),
-                }
+				},
+				swarm: {
+					nodeId: get(data, 'Swarm.NodeID',''),
+					nodeAddr: get(data, 'Swarm.NodeAddr',''),
+					localNodeState: get(data, 'Swarm.LocalNodeState', ''),
+					remoteManagers: get(data, 'Swarm.RemoteManagers', []),
+					nodeCnt: get(data, 'Swarm.Nodes',0),
+					managerCnt: get(data, 'Swarm.Managers',0)
+				}
             }
         });
 

@@ -3,7 +3,8 @@ import * as swarmCtrl from './swarm.ctrl';
 
 const router = new Router();
 
-router.post('/', swarmCtrl.swarmInit);
+router.get('/', swarmCtrl.getSwarmInfo);
+router.post('/init', swarmCtrl.swarmInit);
 router.post('/join', swarmCtrl.swarmJoin);
 router.post('/leave', swarmCtrl.swarmLeave)
 router.get('/token', swarmCtrl.getSwarmToken);
