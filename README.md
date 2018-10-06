@@ -1,4 +1,4 @@
-# DockerFarm-frontend
+# DockerFarm-backend
 
 ![Build Status](http://jenkins.dockerfarm.cf/buildStatus/icon?job=DockerFarm-backend/master)
 
