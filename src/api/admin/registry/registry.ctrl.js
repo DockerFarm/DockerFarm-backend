@@ -240,13 +240,13 @@ export const removeRegistry = async ctx => {
     }
 }
 
-export const getSelectRegistryImage = async ctx => {
-    const { registry } = ctx.params;
-    const http = "http://";
+export const selectAllRegistryImage = async ctx => {
+    const { id } = ctx.state.user;
+    const registryId = ctx.params.id;
 
     try {
-        const url = http.concat(registry);
-        const data  = await RegistryApi.getSelectRegistryImage(url);
+        const registry = await Registry.selectRegistry({userId : id, id: registryId});
+        const data  = await RegistryApi.selectAllRegistryImage(registry);
         ctx.status = 200;
         ctx.body = { result: data };
     } catch(e) {
