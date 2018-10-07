@@ -1,25 +1,17 @@
 import * as ContainerApi from 'lib/dockerApi/container';
 import Joi from 'joi';
-import { assign } from 'lodash';
+import { get, assign } from 'lodash';
 
 const preparePortbinding = (config) => {
-    const bindings = {};
-    const exposed = {};
-    config.ports.forEach( port => {
-        if(port.container) {
-            const key = port.container + '/' + port.protocol;
-            const binding = {};
-            if (port.host && port.host.indexOf(':') > -1) {
-                const hostAndPort = port.host.split(':');
-                binding.HostIp = hostAndPort[0];
-                binding.HostPort = hostAndPort[1];
-            } else {
-                binding.HostPort = port.host;
-            }
-            bindings[key] = [binding];
-            exposed[key] = {};
-        }
-    });
+	const ports = get(config, 'port',[]);
+    const bindings = ports.reduce((acc,v) => {
+		acc[`${v.container}/${get(v,'protocol','tcp')}`] = [{"HostPort" : v.host}];
+		return acc;
+	},{});
+	const exposed = ports.reduce((acc,v) => {
+		acc[`${v.container}/${get(v,'protocol','tcp')}`] = {};
+		return acc;
+	},{});
     return { bindings, exposed };
 }
 

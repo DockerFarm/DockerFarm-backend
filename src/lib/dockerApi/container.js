@@ -112,7 +112,7 @@ export const createContainer = ({url, form}) =>
             }, []),
             "NetworkMode": form.networkMode,
             "Privileged": form.privileged,
-            "ExtraHosts": [form.extrahosts],
+            "ExtraHosts": get(form, 'extrahosts', []),
             "Devices": map(form.device, v => {
                 const value = {};
                 value.PathOnHost = v.host;
