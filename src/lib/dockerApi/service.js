@@ -8,18 +8,18 @@ export const getServiceList = (url) =>
     axios.get(`${url}/services`)
         .then(resp => {
             const transformObject = v => {
-                const targetport = get(v, 'Endpoint.Spec.Ports[0].TargetPort','');
-                const publishedport = get(v, 'Endpoint.Spec.Ports[0].PublishedPort','');
+				const ports = get(v, 'Endpoint.Spec.Ports',[]);
                     return {
-                        servicename: get(v,'Spec.Name',''),
+						id: get(v, 'ID', ''),
+                        name: get(v,'Spec.Name',''),
                         stack: get(v, `Spec.Labels['com.docker.stack.namespace']`,'-'),
                         image: get(v, 'Spec.TaskTemplate.ContainerSpec.Image','').substr(0,get(v, 'Spec.TaskTemplate.ContainerSpec.Image','').indexOf("@")),
-                        updatedat: get(v, 'UpdatedAt', '-'),
-                        port: {
-                                targetport,
-                                publishedport
-                            },
-                        replicated: get(v, 'Spec.Mode.Replicated.Replicas', '-')
+                        updatedAt: get(v, 'UpdatedAt', 'T-').split('T')[0],
+						port: ports.map(v=> 
+							({ host: get(v, 'PublishedPort',''), 
+								container: get(v,'TargetPort','') })),
+						replicated: get(v, 'Spec.Mode.Replicated.Replicas', '-')
+
                     }
                 };
                 return resp.data.map(transformObject);
@@ -34,8 +34,8 @@ export const getServiceInfo = ({url, id}) =>
                 detail : {
                     name: get(data,'Spec.Name',''),
                     id: get(data,'ID', ''),
-                    created: get(data,'CreatedAt', ''),
-                    updated: get(data,'UpdatedAt', ''),
+                    createdAt: get(data,'CreatedAt', 'T').split('T')[0],
+                    updatedAt: get(data,'UpdatedAt', 'T').split('T')[0],
                     version: get(data, 'Version.Index',''),
                     replicas: get(data, 'Spec.Mode.Replicated.Replicas',''),
                     image: get(data, 'Spec.TaskTemplate.ContainerSpec.Image','')
