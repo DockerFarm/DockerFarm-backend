@@ -248,7 +248,7 @@ export const selectAllRegistryImage = async ctx => {
         const registry = await Registry.selectRegistry({userId : id, id: registryId});
         const data  = await RegistryApi.selectAllRegistryImage(registry);
         ctx.status = 200;
-        ctx.body = { result: data };
+		ctx.body = { result: data.filter(v=>v) };
     } catch(e) {
         ctx.throw(e, 500);
     }
