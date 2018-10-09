@@ -4,7 +4,7 @@ import { request } from 'lib/httpClient';
 import { get } from 'lodash';
 
 export const getTaskList = ({url, id}) =>
-    axios.get(`http://104.198.94.79:4243/tasks?filters={"service":["${id}"]}`)
+    axios.get(`${url}/tasks?filters={"service":["${id}"]}`)
         .then(resp => {
             const transformObject = v => {
                 return {
@@ -19,7 +19,7 @@ export const getTaskList = ({url, id}) =>
         });
 
 export const getTaskInfo = ({url, id}) =>
-    axios.get(`http://104.198.94.79:4243/tasks/${id}`)
+    axios.get(`${url}/tasks/${id}`)
         .then(resp => {
             const { data }  = resp;
             return  {

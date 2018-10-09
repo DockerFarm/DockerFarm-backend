@@ -6,7 +6,6 @@ export const getTaskList = async ctx => {
 
     try {
         const  data = await TaskApi.getTaskList({url, id});
-        console.log(data);
         ctx.status = 200;
         ctx.body = { result: data };
     } catch(e) {
