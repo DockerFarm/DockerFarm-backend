@@ -42,7 +42,8 @@ export const selectAllRegistryImage = async ({
 					})
 				} catch (e) {
 					/* handle error */
-					reject(e)
+					//if error digest delete continue to next 
+					resolve();
 				}
 			})
 		});
