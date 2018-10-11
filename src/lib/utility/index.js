@@ -21,3 +21,25 @@ export const numberWithCommas = x => {
 }
 
 export const objectToQueryString = obj => reduce(obj, (acc, v, k) => concat(acc, `${k}=${v}`),[]).join('&')
+
+export const translateHumantimeToNanos = (time) => {
+    let nanos = "";
+    const regex = /^([0-9]+)(h|m|s|ms|us|ns)$/i;
+    const matches = time.match(regex);
+
+    if (matches !== null && matches.length === 3) {
+        const time = parseInt(matches[1], 10);
+        const unit = matches[2];
+        switch (unit) {
+            case 'ns':
+                nanos = time;
+            break;
+            case 'us':
+                nanos = time * 1000;
+            break;
+            default:
+            nanos = moment.duration(time, unit).asMilliseconds() * 1000000;
+        }
+    }
+    return nanos;
+};
