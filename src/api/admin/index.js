@@ -10,6 +10,7 @@ import library from './library';
 import event from './event';
 import swarm from './swarm';
 import service from './service';
+import task from './task';
 
 const router = new Router;
 
@@ -24,5 +25,6 @@ router.use('/library', library.routes());
 router.use('/event', event.routes());
 router.use('/swarm', swarm.routes());
 router.use('/service', service.routes());
+router.use('/task', task.routes());
 
 export default router;
