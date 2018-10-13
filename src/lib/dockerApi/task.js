@@ -11,7 +11,7 @@ export const getTaskList = ({url, id}) =>
                     id: get(v,'ID',''),
                     status: get(v, 'Status.State',''),
                     slot: get(v, 'Slot',''),
-                    updatedat: get(v, 'UpdatedAt', ''),
+                    updatedAt: get(v, 'UpdatedAt', 'T').split('T')[0],
                     nodeId: get(v, 'NodeID', '')
                 }
             };
@@ -28,7 +28,7 @@ export const getTaskInfo = ({url, id}) =>
                     stateMessage: get(data, 'Status.Message',''),
                     image: get(data, 'Spec.ContainerSpec.Image', ''),
                     slot: get(data, 'Slot', ''),
-                    createdat: get(data, 'CreatedAt', ''),
+                    createdAt: get(data, 'CreatedAt', 'T').split('T')[0],
                     container: get(data, 'Status.ContainerStatus.ContainerID', ''),
             }
         });
