@@ -11,35 +11,21 @@ node {
             sh 'printenv'
         }
         stage('Build Docker test') {
-            echo "Build Docker Test" 
-        } 
+            echo "Build Docker Test"
+        }
         stage('Docker test') {
-            echo "Dokcer test" 
+            echo "Dokcer test"
         }
         stage('Clean Docker test'){
             echo "Clean Docker test"
         }
         stage('Push Image') {
             if(env.BRANCH_NAME == 'master') {
-                shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-                sh 'docker build -t dockerfarm-backend --no-cache .'
-                sh 'docker tag dockerfarm-backend localhost:5000/dockerfarm-backend'
-                sh 'docker push localhost:5000/dockerfarm-backend'
-                sh 'docker rmi -f dockerfarm-backend localhost:5000/dockerfarm-backend'
+                sh('scripts/image.sh')
             }
         }
         stage('Deploy') {
-            sh 'docker pull localhost:5000/dockerfarm-backend'
-            sh 'docker rm -f dockerfarm-backend || true'
-            sh 'docker system prune -af'
-            sh '''
-                docker run -d -p 3000:3000  \
-                --restart always \
-                --name dockerfarm-backend \
-                -v /home/dockerfarm/dockerfarm-backend/production.env:/usr/src/app/env/production.env \
-                localhost:5000/dockerfarm-backend \
-            '''
-
+            sh('scripts/deploy.sh')
         }
     } catch (err) {
         currentBuild.result = "FAILED"
