@@ -21,11 +21,11 @@ node {
         }
         stage('Push Image') {
             if(env.BRANCH_NAME == 'master') {
-                sh('scripts/image.sh')
+                sh('deploy/image.sh')
             }
         }
         stage('Deploy') {
-            sh('scripts/deploy.sh')
+            sh('deploy/deploy.sh')
         }
     } catch (err) {
         currentBuild.result = "FAILED"
