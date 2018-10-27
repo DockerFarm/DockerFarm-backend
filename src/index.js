@@ -14,7 +14,7 @@ db.connect();
 
 //use koa cors middleware
 app.use(cors({
-    'origin':'http://dockerfarm.io',
+    'origin': config.frontUrl,
     'credentials' : "true"
 }));
 //use koa body parser middleware
