@@ -4,7 +4,6 @@ image='dockerfarm-backend'
 
 docker pull ${registry}/${image}
 docker rm -f ${image} || true
-docker system prune -af
 docker run -d -p 3000:3000  \
     --restart always \
     --name ${image} \

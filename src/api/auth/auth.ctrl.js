@@ -14,7 +14,7 @@ export const register = async ctx => {
     const schema = Joi.object().keys({
         email : Joi.string().email().required(),
         password : Joi.string().min(8).max(10).required(),
-        username : Joi.string().min(6).max(20).required()
+        username : Joi.string().min(3).max(20).required()
     });
 
     let validateResult = schema.validate(ctx.request.body);
