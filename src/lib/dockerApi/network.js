@@ -1,21 +1,23 @@
 import axios from 'axios';
-import { get, keys, size, reduce, sortBy} from 'lodash';
+import { get, keys, size, reduce, orderBy} from 'lodash';
 
 export const getNetworkList = (url) =>
     axios.get(`${url}/networks`)
         .then(resp => {
-          const transformObject = v => {
-              return {
-                id: get(v, 'Id', '').slice(0,12),
-                name: get(v,'Name',''),
-                scope: get(v,'Scope','-'),
-                driver: get(v,'Driver','-'),
-                ipamdriver: get(v, 'IPAM.Driver','-'),
-                subnet: get(v, 'IPAM.Config[0].Subnet','-'),
-                gateway: get(v, 'IPAM.Config[0].Gateway','-'),
-              }
-          };
-          return sortBy(resp.data.map(transformObject), "id");
+              const formatDate = date => date.split('T')[0] + ' ' + date.split('T')[1];
+              const transformObject = v => {
+                  return {
+                    id: get(v, 'Id', '').slice(0,12),
+                    name: get(v,'Name',''),
+                    scope: get(v,'Scope','-'),
+                    driver: get(v,'Driver','-'),
+                    ipamdriver: get(v, 'IPAM.Driver','-'),
+                    subnet: get(v, 'IPAM.Config[0].Subnet','-'),
+                    gateway: get(v, 'IPAM.Config[0].Gateway','-'),
+                    createdAt: formatDate(get(v, 'Created', 'T.').split('.')[0])
+                  }
+              };
+              return orderBy(resp.data.map(transformObject), ["createdAt", "name"], ["desc", "asc"]);
         });
 
 export const getNetworkInfo = (url, id) =>

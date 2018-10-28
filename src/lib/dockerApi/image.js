@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, keys, size, reduce } from 'lodash';
+import { get, keys, size, reduce, orderBy } from 'lodash';
 import * as utility from 'lib/utility';
 
 export const getImageList = (url) =>
@@ -13,7 +13,7 @@ export const getImageList = (url) =>
                     size: utility.humanSize(get(v, 'Size', '')),
                 }
             };
-            return resp.data.map(transformObject);
+            return orderBy(resp.data.map(transformObject), ['created','tag'], ['desc','asc']);
     });
 
 export const getUsedImageId = (url) =>
