@@ -10,7 +10,6 @@ import axios from 'axios';
 
 const app = new Koa();
 
-
 db.connect();
 
 //use koa cors middleware
@@ -21,6 +20,14 @@ app.use(cors({
 //use koa body parser middleware
 app.use(koaBody());
 
+//debug docker remote api parameter
+axios.interceptors.request.use(
+    request => {
+        if( request.data )
+            console.log(JSON.stringify(request.data));
+        return request;
+    }
+)
 // apply interceptor on response
 axios.interceptors.response.use(
     response => response,

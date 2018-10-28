@@ -92,25 +92,17 @@ export const createContainer = ({url, form}) =>
         "Cmd": get(form, 'command',[]),
         "ExposedPorts": form.exposed,
         "HostConfig": {
+            "Mounts": map(get(form, 'volumes', []), v => ({
+                "Target": v.container,
+                "Source": v.volume,
+                "Type": v.type,
+                "ReadOnly": v.permission === 'r' 
+            })),
             "RestartPolicy": {
                 "Name": form.restartPolicy
             },
             "PortBindings": form.bindings,
             "PublishAllPorts": form.publishAllPorts,
-            "Binds": map(form.volume, v => {
-                if ( v.rw == false && v.opt == "volume" ) {
-                    return v.name + ":" + v.containerPath + ":ro"
-                }
-                if ( v.rw == false && v.opt == "bind" ) {
-                    return v.hostPath + ":" + v.containerPath + ":ro"
-                }
-                if ( v.rw == true && v.opt == "volume" ) {
-                    return v.name + ":" + v.containerPath
-                }
-                if (v.rw == true && v.opt == "bind") {
-                    return v.hostPath + ":" + v.containerPath
-                }
-            }, []),
             "NetworkMode": form.networkMode,
             "Privileged": form.privileged,
             "ExtraHosts": get(form, 'extrahosts', []),
@@ -124,7 +116,7 @@ export const createContainer = ({url, form}) =>
         },
         "NetworkingConfig": {
             "EndpointsConfig":{
-                "bridge":{
+                [get(form,'network','bridge')]:{
                     "IPAMConfig":{
                         "IPv4Address": form.ipv4Address,
                         "IPv6Address": form.ipv6Address
@@ -133,7 +125,7 @@ export const createContainer = ({url, form}) =>
             }
         },
         "Labels": reduce(form.labels, (acc, obj) => {
-            acc[obj.name] = obj.value;
+            acc[obj.key] = obj.value;
             return acc;
         },{}),
         "Entrypoint": form.entryPoint,
@@ -143,13 +135,9 @@ export const createContainer = ({url, form}) =>
         "Hostname": form.hostName,
         "Domainname": form.domainName,
         "OpenStdin":false,
-        "Tty":false,
-        "Volumes":reduce(form.volume, (acc, obj) => {
-            acc[obj.containerPath] = {};
-            return acc;
-        },{}),
+        "Tty":false
         }
-    ).catch(err => console.log(err));
+    );
 
 export const getContainerLog = ({url, id, query}) => 
 	request({
