@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const ObjectId = mongoose.Types.ObjectId;
 const EndPoint = new Schema({
     url: { type : String},
-    name : { type: String, unique: true },
+    name : { type: String },
     tls: { type: Boolean, default: false },
     isActive : { type : Boolean, default: false },
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User' },

@@ -6,6 +6,7 @@ import config from 'config';
 import cors from '@koa/cors';
 import { passport } from 'config/passport';
 import socket from './socket';
+import axios from 'axios';
 
 const app = new Koa();
 
@@ -19,6 +20,23 @@ app.use(cors({
 }));
 //use koa body parser middleware
 app.use(koaBody());
+
+// apply interceptor on response
+axios.interceptors.response.use(
+    response => response,
+    err => {
+        throw err.response.data.message
+    }
+);
+
+app.use(async (ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        ctx.status = err.status || 500;
+        ctx.body = err.message;
+    }
+});
 
 app.use(passport.initialize());
 app.use(api.routes())
