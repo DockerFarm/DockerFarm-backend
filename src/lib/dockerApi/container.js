@@ -3,7 +3,7 @@ import qs from 'query-string'
 import moment from 'moment';
 import { humanSize } from 'lib/utility';
 import { request } from 'lib/httpClient';
-import { get, keys, isArray, filter, map, reduce } from 'lodash';
+import { get, keys, isArray, filter, map, reduce, orderBy } from 'lodash';
 
 
 /**
@@ -29,10 +29,11 @@ export const getContainerList =
                                 private: get(v, 'PrivatePort', ''),
                                 public: get(v, 'PublicPort', ''),
                                 type: get(v, 'Type', '')
-                            }))
+                            })),
+                        createdAt: get(v, 'Created', '')
                     }
                 };
-                return resp.data.map(transformObject);
+                return orderBy(resp.data.map(transformObject), ['createdAt','name'], ['desc','asc']);
             });
 
 /**

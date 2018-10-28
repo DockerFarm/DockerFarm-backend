@@ -1,12 +1,13 @@
 import axios from 'axios';
 import qs from 'query-string'
 import { request } from 'lib/httpClient';
-import { get, keys, map } from 'lodash';
+import { get, keys, map, orderBy } from 'lodash';
 
 
 export const getServiceList = (url) =>
     axios.get(`${url}/services`)
         .then(resp => {
+            const formatDate = date => date.split('T')[0] + ' ' + date.split('T')[1];
             const transformObject = v => {
 				const ports = get(v, 'Endpoint.Spec.Ports',[]);
                     return {
@@ -14,15 +15,16 @@ export const getServiceList = (url) =>
                         name: get(v,'Spec.Name',''),
                         stack: get(v, `Spec.Labels['com.docker.stack.namespace']`,'-'),
                         image: get(v, 'Spec.TaskTemplate.ContainerSpec.Image','').substr(0,get(v, 'Spec.TaskTemplate.ContainerSpec.Image','').indexOf("@")),
-                        updatedAt: get(v, 'UpdatedAt', 'T-').split('T')[0],
-						port: ports.map(v=> 
+                        updatedAt: formatDate(get(v, 'UpdatedAt', 'T.').split('.')[0]),
+                        createdAt: formatDate(get(v, 'CreatedAt', 'T.').split('.')[0]),
+						port: ports.map(v=>
 							({ host: get(v, 'PublishedPort',''), 
 								container: get(v,'TargetPort','') })),
 						replicated: get(v, 'Spec.Mode.Replicated.Replicas', '-')
 
                     }
                 };
-                return resp.data.map(transformObject);
+                return orderBy(resp.data.map(transformObject), ['updatedAt', 'name'], ['desc','asc']);
             });
 
 export const getServiceInfo = ({url, id}) =>
